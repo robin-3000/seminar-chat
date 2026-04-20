@@ -1,0 +1,25 @@
+{
+  "globalRules": {
+    "timeLimitSec": 0,
+    "maxChars": 0,
+    "visibilityDelaySec": 0,
+    "turnModeEnabled": false,
+    "turnMinSec": 6,
+    "turnMaxSec": 6,
+    "handoverEnabled": false,
+    "handoverSec": 17,
+    "noUndoEnabled": false,
+    "scoreboardEnabled": true
+  },
+  "transformRules": [
+    {
+      "from": "nicht",
+      "to": [
+        "kaum",
+        "nicht ganz",
+        "vielleicht nicht"
+      ],
+      "chance": 0.7
+    }
+  ]
+}

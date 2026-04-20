@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Live-Scoreboard</title>
+  <style>
+    :root { --bg:#f2f2f2; --surface:#fff; --text:#111; --muted:#666; --border:#ddd; --primary:#1f1f1f; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 18px;
+    }
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    h1 { margin: 0 0 6px; font-size: 18px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .topRow { display:flex; justify-content:space-between; gap:12px; align-items:flex-end; margin-bottom: 12px; }
+    .pill {
+      font-size: 12px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fafafa;
+      color: #333;
+      white-space: nowrap;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+    th, td {
+      border-bottom: 1px solid #eee;
+      padding: 8px 6px;
+      text-align: left;
+    }
+    th { color: var(--muted); font-weight: 700; }
+    .writer { font-weight: 900; }
+    @media (max-width: 640px) {
+      body { padding: 10px; }
+      .wrap { padding: 12px; border-radius: 12px; }
+      .topRow { flex-direction: column; align-items: flex-start; }
+      .pill { white-space: normal; }
+      table { display: block; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topRow">
+      <div>
+        <h1>Live-Scoreboard</h1>
+        <div id="scoreboardHint" class="muted">Verbunden...</div>
+      </div>
+      <div class="pill" id="turnPill">Rhythmus: aus</div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Teilnehmer*in</th>
+          <th>Gruppe</th>
+          <th>Nachrichten</th>
+          <th>Zeichen</th>
+        </tr>
+      </thead>
+      <tbody id="scoreboardBody"></tbody>
+    </table>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let latestTurn = { enabled: false, writerId: null, writerName: "", endsAt: null };
+    let latestScoreboardEnabled = true;
+    let tickId = null;
+
+    function renderScoreboard(rows) {
+      if (!latestScoreboardEnabled) return;
+      const body = document.getElementById("scoreboardBody");
+      body.innerHTML = "";
+      (rows || []).forEach((r) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${r.name}</td>
+          <td>${r.group || "-"}</td>
+          <td>${r.messages}</td>
+          <td>${r.chars}</td>
+        `;
+        body.appendChild(tr);
+      });
+    }
+
+    function renderTurnState(state) {
+      latestTurn = state || { enabled: false, writerId: null, writerName: "", endsAt: null };
+      updateTurnPill();
+
+      if (tickId) clearInterval(tickId);
+      tickId = setInterval(updateTurnPill, 250);
+    }
+
+    function updateTurnPill() {
+      const el = document.getElementById("turnPill");
+      if (!el) return;
+
+      if (!latestTurn || !latestTurn.enabled) {
+        el.textContent = "Rhythmus: aus";
+        return;
+      }
+
+      const remaining = latestTurn.endsAt
+        ? Math.max(0, Math.ceil((latestTurn.endsAt - Date.now()) / 1000))
+        : 0;
+
+      if (!latestTurn.writerName) {
+        el.textContent = "Rhythmus: wartet...";
+        return;
+      }
+
+      el.textContent = "Rhythmus: " + latestTurn.writerName + " (" + remaining + "s)";
+    }
+
+    socket.on("connect", () => {
+      document.getElementById("scoreboardHint").textContent = "Verbunden.";
+    });
+
+    socket.on("adminData", (payload) => {
+      latestScoreboardEnabled = payload && payload.rules ? (payload.rules.scoreboardEnabled !== false) : true;
+      renderScoreboard(payload.scoreboard || []);
+      renderTurnState(payload.turnState || {});
+    });
+
+    socket.on("scoreboardUpdate", (rows) => {
+      renderScoreboard(rows || []);
+    });
+
+    socket.on("turnState", (state) => {
+      renderTurnState(state || {});
+    });
+  </script>
+</body>
+</html>

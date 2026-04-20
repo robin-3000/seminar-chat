@@ -1,0 +1,413 @@
+[
+  {
+    "user": "ALBERT",
+    "text": "oke aso da steht ersmal gar nichts",
+    "color": "#e57373",
+    "time": "22:29"
+  },
+  {
+    "user": "NANA",
+    "text": "doch läuft doch super",
+    "color": "#e57373",
+    "time": "22:29"
+  },
+  {
+    "user": "MARTA",
+    "text": "ich weiss ja nicht",
+    "color": "#ffb74d",
+    "time": "22:29"
+  },
+  {
+    "user": "ALBERT",
+    "text": "lass mal sehen.",
+    "color": "#e57373",
+    "time": "22:29"
+  },
+  {
+    "user": "ROBIN",
+    "text": "wow joah, ist das wirklich besser?",
+    "color": "#ba68c8",
+    "time": "22:31"
+  },
+  {
+    "user": "OSKAR",
+    "text": "jedenfalls sind die farben noch immer hässlich",
+    "color": "#f06292",
+    "time": "22:31"
+  },
+  {
+    "user": "OSKAR",
+    "text": "aber ist ok",
+    "color": "#f06292",
+    "time": "22:31"
+  },
+  {
+    "user": "OSKAR",
+    "text": "was will ich denn machen",
+    "color": "#f06292",
+    "time": "22:31"
+  },
+  {
+    "user": "FANTA",
+    "text": "ok mal sehen",
+    "color": "#e57373",
+    "time": "22:45"
+  },
+  {
+    "user": "FANTA",
+    "text": "nichts geändert",
+    "color": "#e57373",
+    "time": "22:46"
+  },
+  {
+    "user": "HELMUT",
+    "text": "hallo?",
+    "color": "#4db6ac",
+    "time": "22:46"
+  },
+  {
+    "user": "GEGE",
+    "text": "alles normal hier",
+    "color": "#f06292",
+    "time": "22:46"
+  },
+  {
+    "user": "HELMUT",
+    "text": "ob das hier funktionier",
+    "color": "#4db6ac",
+    "time": "22:47"
+  },
+  {
+    "user": "HELMUT",
+    "text": "eigentlich gar nicht",
+    "color": "#4db6ac",
+    "time": "22:47"
+  },
+  {
+    "user": "HELMUT",
+    "text": "und nin mpsste mein timer sagen, dass ichkeine zeit mehr habe",
+    "color": "#4db6ac",
+    "time": "22:47"
+  },
+  {
+    "user": "HEE",
+    "text": "nun wo ist die 10 sek regel",
+    "color": "#81c784",
+    "time": "22:48"
+  },
+  {
+    "user": "HEE",
+    "text": "also gut, nun kann man nicht sehen was gesschirben wird",
+    "color": "#81c784",
+    "time": "22:48"
+  },
+  {
+    "user": "HEE",
+    "text": "also dann ist für mich  nur das sichtbar? und fpr die anderen?",
+    "color": "#81c784",
+    "time": "22:50"
+  },
+  {
+    "user": "HELLO",
+    "text": "dann wollen wir mal sehen",
+    "color": "#9575cd",
+    "time": "22:54"
+  },
+  {
+    "user": "HELLO",
+    "text": "also bisher alles normal",
+    "color": "#9575cd",
+    "time": "22:54"
+  },
+  {
+    "user": "GG",
+    "text": "also ich sende von hier",
+    "color": "#f06292",
+    "time": "22:55"
+  },
+  {
+    "user": "HELLO",
+    "text": "achsoo",
+    "color": "#9575cd",
+    "time": "22:57"
+  },
+  {
+    "user": "HELLO",
+    "text": "ahaa",
+    "color": "#9575cd",
+    "time": "22:57"
+  },
+  {
+    "id": "284ec1c7-8818-4fc3-b44a-b1136f57cde6",
+    "user": "HOI",
+    "text": "geile sache nun",
+    "color": "#e57373",
+    "time": "22:58"
+  },
+  {
+    "id": "0efd2f49-8cf1-4df1-877e-79a1bea0da8b",
+    "user": "HMM",
+    "text": "ich glaie das geht noch nicht",
+    "color": "#f06292",
+    "time": "22:59"
+  },
+  {
+    "id": "07c05963-0b37-4110-9aa3-9e5b06c1b4a1",
+    "user": "HOI",
+    "text": "ahsuöer",
+    "color": "#e57373",
+    "time": "22:59"
+  },
+  {
+    "id": "382dc925-549c-4f36-8458-b44cca6e7367",
+    "user": "HMM",
+    "text": "oke und nn haben wir",
+    "color": "#f06292",
+    "time": "23:01"
+  },
+  {
+    "id": "a7b14398-e63d-4059-be78-dffc24fa0b5c",
+    "user": "HMM",
+    "text": "zwei regeln",
+    "color": "#f06292",
+    "time": "23:01"
+  },
+  {
+    "id": "3c4e3077-adf0-48f0-ba54-2593e8345362",
+    "user": "HMM",
+    "text": "aber wer weiss wwies weiter geht",
+    "color": "#f06292",
+    "time": "23:01"
+  },
+  {
+    "id": "7f46c047-26e2-4adb-9119-8594fbba5b23",
+    "user": "BABO",
+    "text": "ok besser",
+    "color": "#e57373",
+    "time": "23:04"
+  },
+  {
+    "id": "f8ad854b-8913-4753-a26e-b8acdcb213b8",
+    "user": "HE",
+    "text": "also jetzt gefällts mir besser",
+    "color": "#f06292",
+    "time": "23:09"
+  },
+  {
+    "id": "fac7beda-9062-42d2-9688-aa30a31ab312",
+    "user": "ALBA",
+    "text": "mein gott",
+    "color": "#81c784",
+    "time": "23:09"
+  },
+  {
+    "id": "feab0420-095b-4006-8539-cce97dc9bbce",
+    "user": "HE",
+    "text": "das geht jetzt immer so?",
+    "color": "#f06292",
+    "time": "23:09"
+  },
+  {
+    "id": "e28132d6-7444-4fa7-83c7-a28ac55e53ba",
+    "user": "HE",
+    "text": "gehts nun?",
+    "color": "#f06292",
+    "time": "23:10"
+  },
+  {
+    "id": "86d06bc2-9c0a-408e-9d5c-e8f9902db42b",
+    "user": "PAULA",
+    "text": "letzegoo",
+    "color": "#e57373",
+    "time": "23:13"
+  },
+  {
+    "id": "f037bd07-3fdf-4f77-9e4e-8554d518d974",
+    "user": "HES",
+    "text": "und was gewinnen wir jetzt?",
+    "color": "#64b5f6",
+    "time": "23:28"
+  },
+  {
+    "id": "36569f9a-3a71-4bba-9ca9-8841313a3ad7",
+    "user": "MAGE",
+    "text": "ich bin dran",
+    "color": "#e57373",
+    "time": "23:35"
+  },
+  {
+    "id": "fac83b2d-a422-49ed-bff8-200783393a41",
+    "user": "MARTIN",
+    "text": "ich teste",
+    "color": "#64b5f6",
+    "time": "10:43"
+  },
+  {
+    "id": "68f89301-f7db-401a-889c-7509dbd201ce",
+    "user": "HELGA",
+    "text": "das ist super",
+    "color": "#64b5f6",
+    "time": "10:43"
+  },
+  {
+    "id": "79d914b7-e377-4ad9-b856-ed64dd2ef271",
+    "user": "HELGA",
+    "text": "klein",
+    "color": "#64b5f6",
+    "time": "10:44"
+  },
+  {
+    "id": "ef2e0cad-9641-416c-9624-727e27d30208",
+    "user": "MARTIN",
+    "text": "neue regel",
+    "color": "#64b5f6",
+    "time": "10:45"
+  },
+  {
+    "id": "3609f875-96f4-4f01-8bed-fb0a79086b55",
+    "user": "MARTIN",
+    "text": "ich hab nichts mehr zu sagen",
+    "color": "#64b5f6",
+    "time": "10:48"
+  },
+  {
+    "id": "475c80c6-6aca-4ceb-b76b-fbcba2b6690c",
+    "user": "HERBERT",
+    "text": "das sithz gut aus",
+    "color": "#f06292",
+    "time": "10:56"
+  },
+  {
+    "id": "04d440be-c259-4560-817f-f54ed640555c",
+    "user": "HERBERT",
+    "text": "wie ist das?",
+    "color": "#f06292",
+    "time": "10:56"
+  },
+  {
+    "id": "44968719-9cea-44cb-a03a-185869c7b4d1",
+    "user": "MERTA",
+    "text": "helloo",
+    "color": "#9575cd",
+    "time": "10:57"
+  },
+  {
+    "id": "47432656-b5c5-42ec-a368-4d2ceb27b71d",
+    "user": "HERBERT",
+    "text": "toll",
+    "color": "#f06292",
+    "time": "10:57"
+  },
+  {
+    "id": "8250433b-fa25-4867-96fd-0faf36b9af02",
+    "user": "MERTA",
+    "text": "hallo",
+    "color": "#9575cd",
+    "time": "10:57"
+  },
+  {
+    "id": "3988d72b-ccbd-4198-b8af-47ec875b559f",
+    "user": "HERBERT",
+    "text": "hichafdgfewrgdfbdegd",
+    "color": "#f06292",
+    "time": "10:57"
+  },
+  {
+    "id": "081dba1f-e7ff-45be-950c-316e4b739ab9",
+    "user": "MERTA",
+    "text": "f",
+    "color": "#9575cd",
+    "time": "10:58"
+  },
+  {
+    "id": "03a68e9b-4092-4f8a-8825-d8135d81dc1e",
+    "user": "MERTA",
+    "text": "fbadgbffbgntrdnvasvnrbipenribtobn",
+    "color": "#9575cd",
+    "time": "10:58"
+  },
+  {
+    "id": "382bb813-3635-4cb2-9103-7f37ff9983c8",
+    "user": "HERBERT",
+    "text": "gbasgb",
+    "color": "#f06292",
+    "time": "10:58"
+  },
+  {
+    "id": "446e6fe9-92bb-4781-9d7f-531753a5b4a4",
+    "user": "MERTA",
+    "text": "das funktionier tnoch nicht",
+    "color": "#9575cd",
+    "time": "10:59"
+  },
+  {
+    "id": "5dd6b25c-387d-4f64-bf65-a3a5b35e5231",
+    "user": "HERBERT",
+    "text": "leder nein",
+    "color": "#f06292",
+    "time": "10:59"
+  },
+  {
+    "id": "ce97308e-2c8e-4b00-aade-04799c106782",
+    "user": "GAGA",
+    "text": "heii",
+    "color": "#9575cd",
+    "time": "11:51"
+  },
+  {
+    "id": "a0d9a374-86f9-43e4-bc7f-545ba3b30b5d",
+    "user": "GAGA",
+    "text": "ah nun schriebe ich, interessant",
+    "color": "#9575cd",
+    "time": "11:53"
+  },
+  {
+    "id": "4ca67e8b-0777-4b6d-b900-c022e80a9649",
+    "user": "GOG",
+    "text": "Schauen wir mal",
+    "color": "#ba68c8",
+    "time": "12:07"
+  },
+  {
+    "id": "1e39b0e9-3e57-48d2-b2c2-7949129f0f9f",
+    "user": "LANF",
+    "text": "Hii",
+    "color": "#ba68c8",
+    "time": "12:08"
+  },
+  {
+    "id": "ea3cda95-fb9a-4d9c-bf2f-8988b89c79b8",
+    "user": "GWERG",
+    "text": "ergb",
+    "color": "#e57373",
+    "time": "12:13"
+  },
+  {
+    "id": "839a07b3-3203-4b18-bacf-5b20e2c81290",
+    "user": "GWERG",
+    "text": "ergb",
+    "color": "#e57373",
+    "time": "12:13"
+  },
+  {
+    "id": "394eba81-65d7-4c8b-ba29-06cecff90ab6",
+    "user": "GWERG",
+    "text": "werb",
+    "color": "#e57373",
+    "time": "12:13"
+  },
+  {
+    "id": "d0c9773e-394b-4a0f-8c90-fea204e0bec9",
+    "user": "GG",
+    "text": "gut",
+    "color": "#81c784",
+    "time": "12:13"
+  },
+  {
+    "id": "bc403510-f478-4458-93b4-70e816ad324c",
+    "user": "DE",
+    "text": "Mal tesren",
+    "color": "#81c784",
+    "time": "12:16"
+  }
+]

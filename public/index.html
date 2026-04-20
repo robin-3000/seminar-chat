@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seminar Chat</title>
+
+<style>
+:root {
+  --bg: #f3f3f3;
+  --surface: #ffffff;
+  --surface-soft: #f7f7f7;
+  --text: #111111;
+  --muted: #666666;
+  --border: #dddddd;
+  --primary: #1f1f1f;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f1f1f1;
+  color: var(--text);
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+}
+
+.card {
+  width: min(920px, 100%);
+  height: min(760px, calc(100vh - 48px));
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  position: relative;
+}
+
+/* LOGIN */
+#login {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--surface-soft);
+}
+
+.login-panel {
+  width: min(420px, 100%);
+  padding: 28px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.login-title { margin: 0 0 8px; font-size: 24px; font-weight: 650; }
+.login-subtitle { margin: 0 0 20px; color: var(--muted); font-size: 14px; }
+.row { display: flex; gap: 10px; }
+
+/* CHAT */
+#chatContainer {
+  display: none;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.chat-header {
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.chat-header-top {
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.header-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.icon-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  padding: 4px 9px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.icon-btn:hover { background: #f0f0f0; color: var(--text); }
+.icon-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+.rules-info {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 0 16px 8px;
+}
+
+/* SEARCH BAR */
+#searchBar {
+  display: none;
+  padding: 8px 16px;
+  border-top: 1px solid var(--border);
+  background: #fafafa;
+  align-items: center;
+  gap: 8px;
+}
+
+#searchInput {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 13px;
+  outline: none;
+}
+
+#searchInput:focus { border-color: #9c9c9c; }
+
+#searchCount { font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+.search-close-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+.search-close-btn:hover { background: #eee; color: var(--text); }
+
+/* BOOKMARK PANEL */
+#bookmarkPanel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 260px;
+  height: 100%;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  z-index: 20;
+  display: none;
+  flex-direction: column;
+  box-shadow: -4px 0 16px rgba(0,0,0,0.07);
+}
+
+.bookmark-panel-header {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#bookmarkList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.bookmark-empty {
+  color: var(--muted);
+  font-size: 13px;
+  padding: 12px 8px;
+  text-align: center;
+}
+
+.bookmark-item {
+  padding: 9px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  margin-bottom: 6px;
+  background: #fafafa;
+}
+
+.bookmark-item:hover { background: #f0f0f0; }
+
+.bookmark-item-user {
+  font-weight: 700;
+  margin-bottom: 2px;
+  font-size: 11px;
+}
+
+.bookmark-item-text {
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bookmark-item-time {
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 3px;
+}
+
+/* CHAT AREA */
+#chat {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--surface-soft);
+}
+
+/* MESSAGE */
+.message {
+  max-width: min(76%, 560px);
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #fff;
+  position: relative;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.message:hover { border-color: #bbb; }
+
+.message.bookmarked {
+  border-left: 3px solid #e8a000;
+}
+
+.message.search-hidden { display: none !important; }
+
+mark {
+  background: #ffe082;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* BOOKMARK ICON on message */
+.msg-bm-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  color: #ccc;
+  padding: 2px 4px;
+  border-radius: 4px;
+  line-height: 1;
+  display: none;
+}
+
+.message:hover .msg-bm-btn { display: block; }
+.message.bookmarked .msg-bm-btn { display: block; color: #e8a000; }
+
+.left { align-self: flex-start; }
+.right { align-self: flex-end; background: #ececec; color: #111; border: 1px solid #d4d4d4; }
+.right.bookmarked { border-left: 3px solid #e8a000; }
+
+.name { font-size: 11px; font-weight: 700; letter-spacing: 0.02em; margin-bottom: 4px; }
+.text { font-size: 14px; line-height: 1.4; word-break: break-word; }
+.time { margin-top: 6px; font-size: 11px; opacity: 0.75; text-align: right; }
+
+/* INPUT */
+#inputArea {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px 16px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.composer-row { display: flex; gap: 10px; }
+
+input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  border-radius: 10px;
+  padding: 11px 12px;
+  font-size: 14px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #9c9c9c;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+button {
+  border: 0;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  padding: 0 16px;
+  cursor: pointer;
+}
+
+button:hover { filter: brightness(0.92); }
+#sendBtn { min-width: 96px; }
+
+.input-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+#maskedPreview { opacity: 0.9; }
+
+#turnNotice {
+  display: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  background: #fafafa;
+}
+
+#turnNotice.active { display: block; }
+
+@media (max-width: 640px) {
+  .app { padding: 0; }
+  .app { align-items: stretch; }
+  .card {
+    width: 100%;
+    height: 100vh;
+    border-radius: 0;
+    border: 0;
+    box-shadow: none;
+  }
+  .login-panel {
+    min-height: 100vh;
+    border: 0;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .row { flex-direction: column; }
+  .chat-header-top { align-items: flex-start; gap: 10px; }
+  .header-actions { width: 100%; flex-wrap: wrap; }
+  .icon-btn { flex: 1 1 calc(50% - 6px); min-height: 40px; }
+  #searchBar { padding: 10px 12px; flex-wrap: wrap; }
+  #searchCount { width: 100%; }
+  #chat { padding: 12px; }
+  .message { max-width: 88%; }
+  #inputArea { padding: 12px; }
+  .composer-row { flex-direction: column; }
+  #sendBtn { width: 100%; min-height: 44px; }
+  .input-meta { flex-direction: column; gap: 4px; }
+  #bookmarkPanel { width: 100%; }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+  <div class="card">
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-panel">
+    <h1 class="login-title">Seminar Chat</h1>
+    <p class="login-subtitle">Schreibe mit der Gruppe in einem klaren, ruhigen Interface.</p>
+    <div class="row">
+      <input id="name" placeholder="Dein Name">
+      <button onclick="join()">Start</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="chatContainer">
+  <div class="chat-header">
+    <div class="chat-header-top">
+      <div>Live Chat</div>
+      <div class="header-actions">
+        <button class="icon-btn" id="searchToggleBtn" onclick="toggleSearch()" title="Suchen">&#x1F50D;</button>
+        <button class="icon-btn" id="bookmarkToggleBtn" onclick="toggleBookmarkPanel()" title="Markierungen">&#x2605; <span id="bookmarkCount"></span></button>
+        <button class="icon-btn" onclick="exportChat()" title="Chat exportieren">&#x2193; Export</button>
+      </div>
+    </div>
+    <div id="rulesInfo" class="rules-info">Regeln: Standard</div>
+    <div id="searchBar">
+      <input id="searchInput" placeholder="Chat durchsuchen..." autocomplete="off">
+      <span id="searchCount"></span>
+      <button class="search-close-btn" onclick="closeSearch()" title="Suche schliessen">&#x2715;</button>
+    </div>
+  </div>
+  <div id="chat"></div>
+
+  <div id="inputArea">
+    <div id="turnNotice"></div>
+    <div class="composer-row">
+      <input id="msg" placeholder="Nachricht">
+      <button id="sendBtn" onclick="send()">Senden</button>
+    </div>
+    <div class="input-meta">
+      <div id="maskedPreview"></div>
+      <div id="composerStatus"></div>
+    </div>
+  </div>
+</div>
+
+<!-- BOOKMARK PANEL -->
+<div id="bookmarkPanel">
+  <div class="bookmark-panel-header">
+    <span>Markierte Nachrichten</span>
+    <button class="search-close-btn" onclick="toggleBookmarkPanel()">&#x2715;</button>
+  </div>
+  <div id="bookmarkList">
+    <div class="bookmark-empty">Noch keine Markierungen.</div>
+  </div>
+</div>
+
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+const socket = io();
+const SAVED_NAME_KEY = "seminarChatName";
+
+let myName = null;
+let myColor = null;
+let mySocketId = null;
+let currentRules = {
+  timeLimitSec: 0,
+  maxChars: 0,
+  visibilityDelaySec: 0,
+  turnModeEnabled: false,
+  turnMinSec: 0,
+  turnMaxSec: 0,
+  handoverEnabled: false,
+  handoverSec: 0,
+  noUndoEnabled: false,
+  scoreboardEnabled: true
+};
+let composeTimerId = null;
+let composeDeadline = null;
+let blockedUntil = null;
+let blockedTimerId = null;
+let turnTickId = null;
+let currentTurnState = { enabled: false, writerId: null, writerName: "", endsAt: null };
+let immutablePrefix = "";
+const pendingMessageNodes = new Map();
+const pendingReveals = new Map();
+
+// Bookmarks: id -> { user, text, time, color, el }
+const bookmarks = new Map();
+// All rendered messages data: id -> { user, text, time, color }
+const messagesById = new Map();
+
+/* JOIN */
+function join() {
+  const name = document.getElementById("name").value.trim();
+  if (!name) return;
+  localStorage.setItem(SAVED_NAME_KEY, name);
+  socket.emit("join", name);
+}
+
+/* INIT */
+socket.on("init", (data) => {
+  mySocketId = data.socketId || socket.id;
+  myName = data.name;
+  myColor = data.color;
+
+  renderHistory(data.history || []);
+  applyRules(data.rules || currentRules);
+
+  document.getElementById("login").style.display = "none";
+  document.getElementById("chatContainer").style.display = "flex";
+
+  const input = document.getElementById("msg");
+  if (input) input.focus();
+});
+
+/* SEND */
+function send() {
+  const input = document.getElementById("msg");
+  const sendBtn = document.getElementById("sendBtn");
+  if (sendBtn.disabled) return;
+
+  const text = input.value.trim();
+  if (!text) return;
+
+  socket.emit("message", text);
+  socket.emit("draftUpdate", "");
+  immutablePrefix = "";
+  input.value = "";
+  resetComposeTimer();
+  refreshComposerState();
+  input.focus();
+}
+
+/* ENTER SEND */
+document.addEventListener("DOMContentLoaded", () => {
+  const nameInput = document.getElementById("name");
+  const input = document.getElementById("msg");
+  const searchInput = document.getElementById("searchInput");
+  const savedName = localStorage.getItem(SAVED_NAME_KEY);
+
+  if (nameInput && savedName) {
+    nameInput.value = savedName;
+    setTimeout(() => {
+      if (!myName) join();
+    }, 0);
+  }
+
+  if (nameInput) {
+    nameInput.addEventListener("keydown", function(event) {
+      if (event.key === "Enter") { event.preventDefault(); join(); }
+    });
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener("input", doSearch);
+    searchInput.addEventListener("keydown", function(event) {
+      if (event.key === "Escape") closeSearch();
+    });
+  }
+
+  if (!input) return;
+
+  input.addEventListener("keydown", function(event) {
+    const hasImmutablePrefix = immutablePrefix.length > 0;
+    const start = input.selectionStart || 0;
+    const end = input.selectionEnd || 0;
+    const touchesPrefix = start < immutablePrefix.length || end < immutablePrefix.length;
+
+    if (hasImmutablePrefix) {
+      if (event.key === "Backspace" && start <= immutablePrefix.length && start === end) {
+        event.preventDefault();
+        input.setSelectionRange(immutablePrefix.length, immutablePrefix.length);
+        return;
+      }
+      if (event.key === "Delete" && start < immutablePrefix.length) {
+        event.preventDefault();
+        input.setSelectionRange(immutablePrefix.length, immutablePrefix.length);
+        return;
+      }
+      if (touchesPrefix && (event.key === "Backspace" || event.key === "Delete")) {
+        event.preventDefault();
+        input.setSelectionRange(immutablePrefix.length, immutablePrefix.length);
+        return;
+      }
+      if (touchesPrefix && event.key.length === 1) {
+        event.preventDefault();
+        input.setSelectionRange(immutablePrefix.length, immutablePrefix.length);
+        return;
+      }
+    }
+
+    if (currentRules.noUndoEnabled) {
+      const undoShortcut = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "z";
+      if (undoShortcut) { event.preventDefault(); return; }
+    }
+    if (event.key === "Enter") { event.preventDefault(); send(); }
+  });
+
+  input.addEventListener("input", function() {
+    if (immutablePrefix && !input.value.startsWith(immutablePrefix)) {
+      const preservedSuffix = input.value.slice(Math.max(0, immutablePrefix.length));
+      input.value = immutablePrefix + preservedSuffix;
+      input.setSelectionRange(input.value.length, input.value.length);
+    }
+    socket.emit("draftUpdate", input.value);
+    refreshComposerState();
+    maybeStartComposeTimer();
+  });
+
+  input.addEventListener("beforeinput", function(event) {
+    if (!currentRules.noUndoEnabled) return;
+    if (event.inputType === "historyUndo" || event.inputType === "historyRedo") {
+      event.preventDefault();
+    }
+  });
+});
+
+/* SEARCH */
+function toggleSearch() {
+  const bar = document.getElementById("searchBar");
+  const btn = document.getElementById("searchToggleBtn");
+  const isVisible = bar.style.display === "flex";
+  if (isVisible) {
+    closeSearch();
+  } else {
+    bar.style.display = "flex";
+    btn.classList.add("active");
+    document.getElementById("searchInput").focus();
+  }
+}
+
+function closeSearch() {
+  const bar = document.getElementById("searchBar");
+  const btn = document.getElementById("searchToggleBtn");
+  bar.style.display = "none";
+  btn.classList.remove("active");
+  document.getElementById("searchInput").value = "";
+  document.getElementById("searchCount").textContent = "";
+  clearSearchHighlights();
+}
+
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function doSearch() {
+  const q = document.getElementById("searchInput").value.trim();
+  const ql = q.toLowerCase();
+  const messages = document.querySelectorAll("#chat .message");
+  let count = 0;
+
+  messages.forEach((el) => {
+    const textEl = el.querySelector(".text");
+    if (!textEl) return;
+
+    // store original text on first search
+    if (!el.dataset.origText) {
+      el.dataset.origText = textEl.textContent;
+    }
+    const orig = el.dataset.origText;
+
+    if (!ql) {
+      el.classList.remove("search-hidden");
+      textEl.textContent = orig;
+      return;
+    }
+
+    const matches = orig.toLowerCase().includes(ql);
+    if (matches) {
+      el.classList.remove("search-hidden");
+      count++;
+      const escaped = orig.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      const highlighted = escaped.replace(
+        new RegExp(escapeRegex(q.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")), "gi"),
+        "<mark>$&</mark>"
+      );
+      textEl.innerHTML = highlighted;
+    } else {
+      el.classList.add("search-hidden");
+      textEl.textContent = orig;
+    }
+  });
+
+  const countEl = document.getElementById("searchCount");
+  if (countEl) countEl.textContent = ql ? count + " Treffer" : "";
+}
+
+function clearSearchHighlights() {
+  document.querySelectorAll("#chat .message").forEach((el) => {
+    el.classList.remove("search-hidden");
+    const textEl = el.querySelector(".text");
+    if (textEl && el.dataset.origText) {
+      textEl.textContent = el.dataset.origText;
+    }
+  });
+}
+
+/* BOOKMARKS */
+function toggleBookmarkPanel() {
+  const panel = document.getElementById("bookmarkPanel");
+  const btn = document.getElementById("bookmarkToggleBtn");
+  const isVisible = panel.style.display === "flex";
+  panel.style.display = isVisible ? "none" : "flex";
+  btn.classList.toggle("active", !isVisible);
+}
+
+function toggleBookmark(msgId, div) {
+  if (bookmarks.has(msgId)) {
+    bookmarks.delete(msgId);
+    div.classList.remove("bookmarked");
+  } else {
+    const data = messagesById.get(msgId) || {};
+    const textEl = div.querySelector(".text");
+    const text = (textEl && textEl.textContent) || "";
+    bookmarks.set(msgId, { user: data.user || "", text, time: data.time || "", color: data.color || "#999", el: div });
+    div.classList.add("bookmarked");
+  }
+  renderBookmarkList();
+}
+
+function renderBookmarkList() {
+  const list = document.getElementById("bookmarkList");
+  const countEl = document.getElementById("bookmarkCount");
+  if (countEl) countEl.textContent = bookmarks.size > 0 ? "(" + bookmarks.size + ")" : "";
+
+  if (!list) return;
+  if (bookmarks.size === 0) {
+    list.innerHTML = '<div class="bookmark-empty">Noch keine Markierungen.<br>Nachrichten anklicken zum Markieren.</div>';
+    return;
+  }
+
+  list.innerHTML = "";
+  bookmarks.forEach((bm, id) => {
+    const item = document.createElement("div");
+    item.className = "bookmark-item";
+    item.innerHTML = `
+      <div class="bookmark-item-user" style="color:${bm.color}">${bm.user}</div>
+      <div class="bookmark-item-text">${bm.text}</div>
+      <div class="bookmark-item-time">${bm.time}</div>
+    `;
+    item.addEventListener("click", () => {
+      const el = bm.el;
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+        el.style.outline = "2px solid #e8a000";
+        setTimeout(() => { el.style.outline = ""; }, 1200);
+      }
+    });
+    list.appendChild(item);
+  });
+}
+
+/* EXPORT */
+function exportChat() {
+  const lines = [];
+  document.querySelectorAll("#chat .message").forEach((el) => {
+    const user = el.querySelector(".name") ? el.querySelector(".name").textContent.trim() : "";
+    const text = el.querySelector(".text") ? el.querySelector(".text").textContent.trim() : "";
+    const time = el.querySelector(".time") ? el.querySelector(".time").textContent.trim() : "";
+    if (text && text !== "••••••" && text !== "...") {
+      lines.push("[" + time + "] " + user + ": " + text);
+    }
+  });
+
+  if (lines.length === 0) { alert("Kein Chat zum Exportieren."); return; }
+
+  const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "seminar-chat-" + new Date().toISOString().slice(0, 10) + ".txt";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* MESSAGE RENDERING */
+function buildMessageDiv(data, isMe) {
+  const div = document.createElement("div");
+  div.classList.add("message");
+  div.classList.add(isMe ? "right" : "left");
+
+  if (data.id) {
+    div.dataset.msgId = data.id;
+    messagesById.set(data.id, { user: data.user, text: data.text, time: data.time, color: data.color });
+    div.addEventListener("click", (e) => {
+      if (e.target.classList.contains("msg-bm-btn")) return;
+      toggleBookmark(data.id, div);
+    });
+  }
+
+  div.innerHTML = `
+    <div class="name" style="color:${data.color}">${data.user}</div>
+    <div class="text">${data.text}</div>
+    <div class="time">${data.time}</div>
+    <button class="msg-bm-btn" title="Markieren" onclick="event.stopPropagation();toggleBookmark('${data.id}',this.closest('.message'))">&#x2605;</button>
+  `;
+
+  return div;
+}
+
+function renderMessage(data) {
+  const chat = document.getElementById("chat");
+  const isMe = data.user === myName;
+  const div = buildMessageDiv(data, isMe);
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function renderPendingMessage(data) {
+  const chat = document.getElementById("chat");
+  const div = document.createElement("div");
+  div.classList.add("message");
+
+  const isMe = data.senderId === socket.id;
+  if (isMe) {
+    div.classList.add("right");
+  } else {
+    div.classList.add("left");
+  }
+
+  div.innerHTML = `
+    <div class="name" style="color:${data.color}">${data.user}</div>
+    <div class="text">${isMe ? "••••••" : "..."}</div>
+    <div class="time">${data.time}</div>
+  `;
+
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+
+  const textEl = div.querySelector(".text");
+  const timeEl = div.querySelector(".time");
+  if (!textEl || !timeEl) return;
+
+  if (isMe) {
+    timeEl.textContent = data.time + " | verborgen";
+    return;
+  }
+
+  const node = {
+    textEl,
+    timeEl,
+    baseTime: data.time,
+    visibleAt: Number(data.visibleAt) || Date.now(),
+    intervalId: null
+  };
+
+  node.intervalId = setInterval(() => {
+    const remaining = Math.max(0, Math.ceil((node.visibleAt - Date.now()) / 1000));
+    node.timeEl.textContent = node.baseTime + " | sichtbar in " + remaining + "s";
+  }, 200);
+
+  pendingMessageNodes.set(data.id, node);
+
+  if (pendingReveals.has(data.id)) {
+    revealPendingMessage(data.id, pendingReveals.get(data.id));
+    pendingReveals.delete(data.id);
+  }
+}
+
+function revealPendingMessage(id, text) {
+  const node = pendingMessageNodes.get(id);
+  if (!node) {
+    pendingReveals.set(id, text);
+    return;
+  }
+  if (node.intervalId) clearInterval(node.intervalId);
+  node.textEl.textContent = text;
+  node.timeEl.textContent = node.baseTime;
+  pendingMessageNodes.delete(id);
+}
+
+function toSafeInt(value) {
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed < 0) return 0;
+  return parsed;
+}
+
+function summarizeRules(rules) {
+  const parts = [];
+  if (rules.visibilityDelaySec > 0) parts.push("Verdeckte Freigabe aktiv");
+  if (rules.timeLimitSec > 0) parts.push("Schreibzeit: " + rules.timeLimitSec + "s");
+  if (rules.maxChars > 0) parts.push("Maximal: " + rules.maxChars + " Zeichen");
+  if (rules.visibilityDelaySec > 0) parts.push("Freigabe fuer Empfaenger*in: " + rules.visibilityDelaySec + "s");
+  if (rules.turnModeEnabled) parts.push("Rhythmus aktiv");
+  if (rules.handoverEnabled) parts.push("Weitergabe: " + rules.handoverSec + "s");
+  if (rules.noUndoEnabled) parts.push("Undo-Verbot aktiv");
+  return parts.length ? "Aktiv: " + parts.join(" | ") : "Aktiv: keine Einschraenkungen";
+}
+
+function refreshComposerState() {
+  const input = document.getElementById("msg");
+  const preview = document.getElementById("maskedPreview");
+  const status = document.getElementById("composerStatus");
+  if (!input || !preview || !status) return;
+
+  const text = input.value || "";
+  const max = currentRules.maxChars > 0 ? currentRules.maxChars : null;
+
+  if (max && text.length > max) input.value = text.slice(0, max);
+  if (immutablePrefix && !input.value.startsWith(immutablePrefix)) {
+    input.value = immutablePrefix + input.value.slice(Math.max(0, immutablePrefix.length));
+  }
+
+  if (currentRules.visibilityDelaySec > 0) {
+    input.type = "password";
+    preview.textContent = "Sichtbar: nichts";
+  } else {
+    input.type = "text";
+    preview.textContent = "";
+  }
+
+  const effectiveChars = input.value.length;
+  const charInfo = max ? effectiveChars + "/" + max + " Zeichen" : effectiveChars + " Zeichen";
+  status.textContent = charInfo;
+}
+
+function resetComposeTimer() {
+  if (composeTimerId) clearInterval(composeTimerId);
+  composeTimerId = null;
+  composeDeadline = null;
+}
+
+function maybeStartComposeTimer() {
+  const input = document.getElementById("msg");
+  if (!input) return;
+  if (currentRules.timeLimitSec <= 0) return;
+  if (composeTimerId || !input.value.trim()) return;
+
+  composeDeadline = Date.now() + (currentRules.timeLimitSec * 1000);
+  composeTimerId = setInterval(() => {
+    const remainingMs = composeDeadline - Date.now();
+    const remaining = Math.max(0, Math.ceil(remainingMs / 1000));
+    const status = document.getElementById("composerStatus");
+    if (status) {
+      status.textContent = status.textContent.split(" | ")[0] + " | Zeit: " + remaining + "s";
+    }
+    if (remaining <= 0) {
+      clearInterval(composeTimerId);
+      composeTimerId = null;
+      composeDeadline = null;
+      input.value = "";
+      startWriteBlock(30);
+      refreshComposerState();
+    }
+  }, 200);
+}
+
+function startWriteBlock(seconds) {
+  const input = document.getElementById("msg");
+  const sendBtn = document.getElementById("sendBtn");
+  const status = document.getElementById("composerStatus");
+  if (!input || !sendBtn) return;
+
+  if (blockedTimerId) clearInterval(blockedTimerId);
+  blockedUntil = Date.now() + (seconds * 1000);
+  input.disabled = true;
+  sendBtn.disabled = true;
+
+  blockedTimerId = setInterval(() => {
+    const remaining = Math.max(0, Math.ceil((blockedUntil - Date.now()) / 1000));
+    if (status) status.textContent = "Schreibsperre: " + remaining + "s";
+    if (remaining <= 0) {
+      clearInterval(blockedTimerId);
+      blockedTimerId = null;
+      blockedUntil = null;
+      updateComposerLock();
+      refreshComposerState();
+      input.focus();
+    }
+  }, 200);
+}
+
+function updateComposerLock() {
+  const input = document.getElementById("msg");
+  const sendBtn = document.getElementById("sendBtn");
+  if (!input || !sendBtn) return;
+
+  const blockedByTimer = Boolean(blockedUntil && blockedUntil > Date.now());
+  const blockedByTurn = Boolean(
+    currentRules.turnModeEnabled &&
+    currentTurnState.enabled &&
+    currentTurnState.writerId &&
+    currentTurnState.writerId !== mySocketId
+  );
+  const blocked = blockedByTimer || blockedByTurn;
+  input.disabled = blocked;
+  sendBtn.disabled = blocked;
+}
+
+function renderTurnNotice() {
+  const el = document.getElementById("turnNotice");
+  if (!el) return;
+
+  if (turnTickId) { clearInterval(turnTickId); turnTickId = null; }
+
+  if (!currentRules.turnModeEnabled || !currentTurnState.enabled) {
+    el.classList.remove("active");
+    el.textContent = "";
+    updateComposerLock();
+    return;
+  }
+
+  const isWriter = currentTurnState.writerId === mySocketId;
+  el.classList.add("active");
+
+  const updateText = () => {
+    const remaining = currentTurnState.endsAt
+      ? Math.max(0, Math.ceil((currentTurnState.endsAt - Date.now()) / 1000))
+      : 0;
+    if (isWriter) {
+      el.textContent = "Du darfst schreiben. Noch " + remaining + "s.";
+    } else {
+      el.textContent = (currentTurnState.writerName || "Jemand") + " schreibt gerade. Noch " + remaining + "s.";
+    }
+  };
+
+  updateText();
+  turnTickId = setInterval(updateText, 250);
+  updateComposerLock();
+}
+
+function applyRules(rules) {
+  currentRules = {
+    timeLimitSec: toSafeInt(rules.timeLimitSec),
+    maxChars: toSafeInt(rules.maxChars),
+    visibilityDelaySec: toSafeInt(rules.visibilityDelaySec ?? rules.sendDelaySec),
+    turnModeEnabled: Boolean(rules.turnModeEnabled),
+    turnMinSec: toSafeInt(rules.turnMinSec),
+    turnMaxSec: toSafeInt(rules.turnMaxSec),
+    handoverEnabled: Boolean(rules.handoverEnabled),
+    handoverSec: toSafeInt(rules.handoverSec),
+    noUndoEnabled: Boolean(rules.noUndoEnabled),
+    scoreboardEnabled: rules.scoreboardEnabled !== false
+  };
+
+  const rulesInfo = document.getElementById("rulesInfo");
+  if (rulesInfo) rulesInfo.textContent = summarizeRules(currentRules);
+
+  resetComposeTimer();
+  refreshComposerState();
+  renderTurnNotice();
+}
+
+function renderHistory(history) {
+  const chat = document.getElementById("chat");
+  chat.innerHTML = "";
+  messagesById.clear();
+  history.forEach((item) => renderMessage(item));
+}
+
+/* SOCKET EVENTS */
+socket.on("message", (data) => renderMessage(data));
+
+socket.on("rules", (rules) => applyRules(rules || {}));
+
+socket.on("messagePending", (data) => renderPendingMessage(data));
+
+socket.on("messageReveal", (data) => {
+  if (!data || !data.id) return;
+  revealPendingMessage(data.id, data.text || "");
+});
+
+socket.on("turnState", (state) => {
+  currentTurnState = state || { enabled: false, writerId: null, writerName: "", endsAt: null };
+  renderTurnNotice();
+});
+
+socket.on("draftHandover", (payload) => {
+  const input = document.getElementById("msg");
+  const status = document.getElementById("composerStatus");
+  if (!input) return;
+
+  input.value = (payload && payload.text) ? payload.text : "";
+  immutablePrefix = input.value;
+  socket.emit("draftUpdate", input.value);
+  refreshComposerState();
+  if (status) {
+    const fromName = payload && payload.fromName ? payload.fromName : "Jemand";
+    status.textContent = "Entwurf von " + fromName + " uebernommen";
+  }
+  input.focus();
+});
+
+socket.on("draftTakenOver", (payload) => {
+  const input = document.getElementById("msg");
+  const status = document.getElementById("composerStatus");
+  if (input) {
+    immutablePrefix = "";
+    input.value = "";
+    refreshComposerState();
+  }
+  if (status) {
+    const byName = payload && payload.byName ? payload.byName : "Jemand";
+    status.textContent = "Entwurf wurde an " + byName + " uebergeben";
+  }
+});
+
+socket.on("historyClear", () => {
+  const chat = document.getElementById("chat");
+  if (chat) chat.innerHTML = "";
+  messagesById.clear();
+  bookmarks.clear();
+  renderBookmarkList();
+});
+
+socket.on("disconnect", () => {
+  myName = null;
+  mySocketId = null;
+  const chatContainer = document.getElementById("chatContainer");
+  const login = document.getElementById("login");
+  if (!chatContainer || !login) return;
+  chatContainer.style.display = "none";
+  login.style.display = "block";
+});
+
+socket.on("connect", () => {
+  const savedName = localStorage.getItem(SAVED_NAME_KEY);
+  if (!savedName || myName) return;
+  const nameInput = document.getElementById("name");
+  if (nameInput) nameInput.value = savedName;
+  join();
+});
+</script>
+
+</body>
+</html>

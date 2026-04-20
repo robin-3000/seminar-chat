@@ -1,0 +1,24 @@
+{
+  "name": "PhD Lernapp",
+  "short_name": "Lernapp",
+  "description": "iPhone-optimierte Lernapp zu Interface Rhetorik und Synthetic Sentience.",
+  "start_url": "/iphone-lernapp/",
+  "scope": "/iphone-lernapp/",
+  "display": "standalone",
+  "background_color": "#f5f4f0",
+  "theme_color": "#2d3a2e",
+  "lang": "de-AT",
+  "icons": [
+    {
+      "src": "/iphone-lernapp/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/iphone-lernapp/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

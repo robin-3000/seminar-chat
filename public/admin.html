@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Seminar Chat - Schaltpult</title>
+  <style>
+    :root { --bg:#f2f2f2; --surface:#fff; --text:#111; --muted:#666; --border:#ddd; --primary:#1f1f1f; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:var(--bg); color:var(--text); padding:24px; }
+    .panel { max-width: 1080px; margin:0 auto; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:18px; }
+    .top { display:flex; justify-content:space-between; align-items:flex-end; gap:10px; margin-bottom:14px; }
+    h1 { margin:0; font-size:22px; }
+    h2 { margin:0; font-size:16px; }
+    .muted { color:var(--muted); font-size:13px; }
+    .status { font-size:12px; color:var(--muted); }
+    .section { border:1px solid var(--border); border-radius:12px; padding:12px; margin-top:12px; }
+    .section-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+    .rule-row { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid #ececec; }
+    .rule-row:last-child { border-bottom:0; }
+    .rule-label { font-size:14px; }
+    .rule-help { font-size:12px; color:var(--muted); }
+    .control { display:flex; align-items:center; gap:8px; }
+    input[type="number"], input[type="text"], button { border:1px solid var(--border); border-radius:10px; padding:9px 10px; font-size:14px; background:#fff; }
+    button { border:0; background:var(--primary); color:#fff; font-weight:600; cursor:pointer; }
+    .secondary { background:#f0f0f0; color:#111; border:1px solid var(--border); }
+    .danger { background:#b42318; }
+    .switch { position:relative; width:44px; height:26px; }
+    .switch input { opacity:0; width:0; height:0; }
+    .slider { position:absolute; inset:0; background:#d0d0d0; border-radius:999px; transition:.2s; }
+    .slider:before { content:""; position:absolute; width:20px; height:20px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.2s; }
+    .switch input:checked + .slider { background:#1f1f1f; }
+    .switch input:checked + .slider:before { transform: translateX(18px); }
+    .pill-wrap { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+    .pill { font-size:12px; padding:5px 8px; border-radius:999px; border:1px solid var(--border); background:#fafafa; color:#333; }
+    .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:10px; }
+    .rule { border:1px solid var(--border); border-radius:10px; padding:10px; margin-top:8px; display:grid; grid-template-columns:1fr 1fr 110px 100px; gap:8px; }
+    .table { width:100%; border-collapse: collapse; margin-top:10px; font-size:13px; }
+    .table th, .table td { border-bottom:1px solid #eee; padding:8px 6px; text-align:left; }
+    .table th { color:var(--muted); font-weight:600; }
+    .turn-highlight { font-weight:700; }
+    .auth-overlay { position:fixed; inset:0; background:rgba(242,242,242,.96); display:flex; align-items:center; justify-content:center; padding:24px; z-index:10; }
+    .auth-card { width:min(420px, 100%); background:#fff; border:1px solid var(--border); border-radius:16px; padding:20px; box-shadow:0 18px 48px rgba(0,0,0,.08); }
+    .auth-card h2 { margin:0 0 8px; }
+    .auth-card p { margin:0 0 14px; color:var(--muted); font-size:14px; line-height:1.5; }
+    .auth-card input { width:100%; margin-bottom:10px; }
+    .auth-error { min-height:18px; color:#b42318; font-size:13px; }
+    .is-locked { pointer-events:none; opacity:.35; }
+    @media (max-width: 900px) { .rule { grid-template-columns:1fr; } .rule-row { flex-direction:column; align-items:flex-start; } }
+    @media (max-width: 640px) {
+      body { padding: 12px; }
+      .panel { padding: 14px; border-radius: 12px; }
+      .top, .section-head { flex-direction: column; align-items: flex-start; }
+      .control { width: 100%; flex-wrap: wrap; }
+      input[type="number"], input[type="text"], button { width: 100%; min-height: 42px; }
+      .switch { flex: 0 0 auto; }
+      .table { display: block; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+    }
+  </style>
+</head>
+<body>
+  <div id="authOverlay" class="auth-overlay">
+    <div class="auth-card">
+      <h2>Admin-Login</h2>
+      <p>Nur mit Passwort lassen sich Regeln, Gruppen und Verlauf fuer das Seminar steuern.</p>
+      <input id="adminPassword" type="password" placeholder="Passwort">
+      <button id="adminLoginBtn" type="button">Schaltpult entsperren</button>
+      <div id="authError" class="auth-error"></div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="top">
+      <div>
+        <h1>Schaltpult</h1>
+        <div class="muted">Regeln zentral steuern. Aenderungen gelten sofort fuer alle im Chat.</div>
+      </div>
+      <div id="status" class="status">Bereit</div>
+    </div>
+
+    <div class="section">
+      <h2>Aktive Schreibregeln</h2>
+      <div id="activeRules" class="pill-wrap"></div>
+    </div>
+
+    <div class="section">
+      <h2>Basiseinstellungen</h2>
+
+      <div class="rule-row">
+        <div>
+          <div class="rule-label">Verdeckte Freigabe fuer Empfaenger*in</div>
+          <div class="rule-help">Sender*in sieht Text nie, Empfaenger*in erst nach X Sekunden.</div>
+        </div>
+        <div class="control">
+          <label class="switch"><input id="visibilityDelayEnabled" type="checkbox"><span class="slider"></span></label>
+          <input id="ruleVisibilityDelay" type="number" min="1" step="1" value="10" style="width:100px;">
+          <span class="muted">Sek.</span>
+        </div>
+      </div>
+
+      <div class="rule-row">
+        <div>
+          <div class="rule-label">Zeichenlimit</div>
+          <div class="rule-help">Maximale Zeichen pro Nachricht.</div>
+        </div>
+        <div class="control">
+          <label class="switch"><input id="maxCharsEnabled" type="checkbox"><span class="slider"></span></label>
+          <input id="ruleMaxChars" type="number" min="1" step="1" value="140" style="width:100px;">
+          <span class="muted">Zeichen</span>
+        </div>
+      </div>
+
+      <div class="rule-row">
+        <div>
+          <div class="rule-label">Schreibzeit pro Nachricht</div>
+          <div class="rule-help">Wenn aktiv: Zeitlimit bis zum Ablauf (danach Entwurf weg + 30s Sperre).</div>
+        </div>
+        <div class="control">
+          <label class="switch"><input id="timeLimitEnabled" type="checkbox"><span class="slider"></span></label>
+          <input id="ruleTimeLimit" type="number" min="1" step="1" value="30" style="width:100px;">
+          <span class="muted">Sek.</span>
+        </div>
+      </div>
+
+      <div class="rule-row">
+        <div>
+          <div class="rule-label">Rhythmus: Jemand schreibt</div>
+          <div class="rule-help">Immer nur eine Person darf schreiben, fuer X Sekunden pro Turn.</div>
+        </div>
+        <div class="control">
+          <label class="switch"><input id="turnModeEnabled" type="checkbox"><span class="slider"></span></label>
+          <input id="turnSec" type="number" min="1" step="1" value="12" style="width:86px;">
+          <span class="muted">Sek.</span>
+        </div>
+      </div>
+
+      <div class="rule-row">
+        <div>
+          <div class="rule-label">Nachricht-Weitergabe</div>
+          <div class="rule-help">Im Rhythmus wird der Entwurf nach X Sekunden zufaellig an jemand anderen uebergeben. Erfordert Rhythmus-Modus.</div>
+        </div>
+        <div class="control">
+          <label class="switch"><input id="handoverEnabled" type="checkbox"><span class="slider"></span></label>
+          <input id="handoverSec" type="number" min="1" step="1" value="12" style="width:86px;">
+          <span class="muted">Sek.</span>
+        </div>
+      </div>
+
+      <div class="rule-row">
+        <div>
+          <div class="rule-label">Undo-Verbot</div>
+          <div class="rule-help">Rueckgaengig (Cmd/Ctrl+Z) ist gesperrt.</div>
+        </div>
+        <div class="control">
+          <label class="switch"><input id="noUndoEnabled" type="checkbox"><span class="slider"></span></label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="muted">Regeln werden direkt beim Umschalten/Aendern angewendet.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Rollen pro Gruppe</h2>
+      <div class="muted">Teilnehmer*in einer Gruppe zuordnen (z. B. Gruppe A/B/C).</div>
+      <table class="table">
+        <thead><tr><th>Teilnehmer*in</th><th>Gruppe</th></tr></thead>
+        <tbody id="participantsBody"></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>Live-Scoreboard</h2>
+          <div id="turnInfo" class="muted" style="margin-top:4px;">Rhythmus: aus</div>
+        </div>
+        <button type="button" class="secondary" onclick="window.open('/scoreboard.html', '_blank', 'width=860,height=520')">Im neuen Fenster oeffnen</button>
+      </div>
+      <table class="table">
+        <thead><tr><th>Teilnehmer*in</th><th>Gruppe</th><th>Nachrichten</th><th>Zeichen</th></tr></thead>
+        <tbody id="scoreboardBody"></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Modular Autocorrect</h2>
+      <div class="muted">Wortersetzungen mit Wahrscheinlichkeit (nach deiner Vorlage).</div>
+      <div class="row">
+        <button id="addRuleBtn" type="button" class="secondary">+ Regel</button>
+        <button id="loadExampleBtn" type="button" class="secondary">Beispiele</button>
+        <button id="importRulesBtn" type="button" class="secondary">Datei laden</button>
+        <button id="clearRulesBtn" type="button" class="secondary">Leeren</button>
+        <button id="applyTransformRulesBtn" type="button">Autocorrect speichern</button>
+      </div>
+      <input id="rulesFileInput" type="file" accept=".json,application/json" style="display:none">
+      <div id="rulesList"></div>
+    </div>
+
+    <div class="section">
+      <h2>Einstellungen &amp; Chat</h2>
+      <div class="muted" style="margin-bottom:10px;">Einstellungen exportieren/importieren und Chat verwalten.</div>
+      <div class="row">
+        <button type="button" class="secondary" onclick="exportSettings()">Einstellungen exportieren</button>
+        <button type="button" class="secondary" id="importSettingsBtn">Einstellungen importieren</button>
+        <button type="button" class="secondary" onclick="resetSettings()">Auf Standard zuruecksetzen</button>
+      </div>
+      <div class="row" style="margin-top:8px;">
+        <button type="button" class="danger" onclick="clearChat()">Chat leeren</button>
+      </div>
+      <input id="settingsFileInput" type="file" accept=".json,application/json" style="display:none">
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const ADMIN_PASSWORD_KEY = "seminarChatAdminPassword";
+    let isAdminAuthenticated = false;
+
+    function setLockedState(locked) {
+      document.querySelector(".panel").classList.toggle("is-locked", locked);
+    }
+
+    function attemptAdminLogin() {
+      const input = document.getElementById("adminPassword");
+      const error = document.getElementById("authError");
+      const password = input.value;
+      if (!password) {
+        error.textContent = "Bitte Passwort eingeben.";
+        return;
+      }
+      error.textContent = "";
+      socket.emit("adminLogin", password);
+    }
+
+    function unlockAdminUi(password) {
+      isAdminAuthenticated = true;
+      localStorage.setItem(ADMIN_PASSWORD_KEY, password);
+      document.getElementById("authOverlay").style.display = "none";
+      setLockedState(false);
+      setStatus("Als Admin verbunden");
+    }
+
+    function lockAdminUi(message = "Bitte erneut einloggen") {
+      isAdminAuthenticated = false;
+      document.getElementById("authOverlay").style.display = "flex";
+      document.getElementById("authError").textContent = message;
+      setLockedState(true);
+      setStatus("Admin-Sperre aktiv");
+    }
+
+    function addRule(fromVal = "", toVal = "", chanceVal = 70) {
+      const list = document.getElementById("rulesList");
+      const row = document.createElement("div");
+      row.className = "rule";
+      row.innerHTML = `
+        <input class="from" placeholder="wenn (z. B. ich)" value="${fromVal}">
+        <input class="to" placeholder="ersetze durch (z. B. wir,man)" value="${toVal}">
+        <input class="chance" type="number" min="0" max="100" step="1" value="${chanceVal}">
+        <button type="button" class="danger">Loeschen</button>
+      `;
+      row.querySelector("button").addEventListener("click", () => row.remove());
+      list.appendChild(row);
+    }
+
+    function clearRules() { document.getElementById("rulesList").innerHTML = ""; }
+    function loadExamples() {
+      clearRules();
+      addRule("ich", "wir,man", 70);
+      addRule("du", "man,jemand", 70);
+      addRule("ein", "zwei,mehrere,viele", 80);
+      addRule("eine", "zwei,mehrere,viele", 80);
+      addRule("ist", "war,bleibt", 50);
+      addRule("nicht", "kaum,nicht ganz,vielleicht nicht", 70);
+    }
+
+    function getTransformRules() {
+      const rows = Array.from(document.querySelectorAll("#rulesList .rule"));
+      return rows.map((row) => {
+        const from = row.querySelector(".from").value.trim().toLowerCase();
+        const to = row.querySelector(".to").value.split(",").map((v) => v.trim()).filter(Boolean);
+        const chancePct = Number.parseFloat(row.querySelector(".chance").value);
+        if (!from || !to.length || !Number.isFinite(chancePct)) return null;
+        return { from, to, chance: Math.max(0, Math.min(100, chancePct)) / 100 };
+      }).filter(Boolean);
+    }
+
+    function activeRulePills(rules) {
+      const pills = [];
+      if (rules.visibilityDelaySec > 0) pills.push("Verdeckte Freigabe aktiv");
+      if (rules.timeLimitSec > 0) pills.push("Schreibzeit: " + rules.timeLimitSec + "s");
+      if (rules.maxChars > 0) pills.push("Zeichenlimit: " + rules.maxChars);
+      if (rules.visibilityDelaySec > 0) pills.push("Freigabe: " + rules.visibilityDelaySec + "s");
+      if (rules.turnModeEnabled) pills.push("Rhythmus: " + rules.turnMinSec + "s");
+      if (rules.handoverEnabled) pills.push("Weitergabe: " + rules.handoverSec + "s");
+      if (rules.noUndoEnabled) pills.push("Undo-Verbot");
+      return pills.length ? pills : ["Keine Einschraenkungen aktiv"];
+    }
+
+    function renderActiveRules(rules) {
+      const wrap = document.getElementById("activeRules");
+      wrap.innerHTML = "";
+      activeRulePills(rules).forEach((txt) => {
+        const el = document.createElement("div");
+        el.className = "pill";
+        el.textContent = txt;
+        wrap.appendChild(el);
+      });
+    }
+
+    function applySettingsToUi(rules, transformRules) {
+      const timeLimit = Number(rules.timeLimitSec || 0);
+      const maxChars = Number(rules.maxChars || 0);
+      const delay = Number(rules.visibilityDelaySec || rules.sendDelaySec || 0);
+      const turnMin = Number(rules.turnMinSec || 12);
+      const turnMax = Number(rules.turnMaxSec || turnMin);
+      const turnSec = turnMin || turnMax || 12;
+      const handoverSec = Number(rules.handoverSec || 12);
+
+      document.getElementById("timeLimitEnabled").checked = timeLimit > 0;
+      document.getElementById("maxCharsEnabled").checked = maxChars > 0;
+      document.getElementById("visibilityDelayEnabled").checked = delay > 0;
+      document.getElementById("turnModeEnabled").checked = Boolean(rules.turnModeEnabled);
+      document.getElementById("handoverEnabled").checked = Boolean(rules.handoverEnabled);
+      document.getElementById("noUndoEnabled").checked = Boolean(rules.noUndoEnabled);
+      document.getElementById("ruleTimeLimit").value = timeLimit || 30;
+      document.getElementById("ruleMaxChars").value = maxChars || 140;
+      document.getElementById("ruleVisibilityDelay").value = delay || 10;
+      document.getElementById("turnSec").value = turnSec;
+      document.getElementById("handoverSec").value = handoverSec;
+
+      renderActiveRules({
+        timeLimitSec: timeLimit,
+        maxChars,
+        visibilityDelaySec: delay,
+        turnModeEnabled: Boolean(rules.turnModeEnabled),
+        turnMinSec: turnSec,
+        turnMaxSec: turnSec,
+        handoverEnabled: Boolean(rules.handoverEnabled),
+        handoverSec,
+        noUndoEnabled: Boolean(rules.noUndoEnabled)
+      });
+
+      clearRules();
+      (transformRules || []).forEach((r) => {
+        addRule(r.from, Array.isArray(r.to) ? r.to.join(",") : "", Math.round((r.chance || 0) * 100));
+      });
+    }
+
+    function collectGlobalRulesFromUi() {
+      const timeEnabled = document.getElementById("timeLimitEnabled").checked;
+      const maxEnabled = document.getElementById("maxCharsEnabled").checked;
+      const delayEnabled = document.getElementById("visibilityDelayEnabled").checked;
+      const turnSec = Number.parseInt(document.getElementById("turnSec").value, 10) || 1;
+
+      return {
+        timeLimitSec: timeEnabled ? (Number.parseInt(document.getElementById("ruleTimeLimit").value, 10) || 0) : 0,
+        maxChars: maxEnabled ? (Number.parseInt(document.getElementById("ruleMaxChars").value, 10) || 0) : 0,
+        visibilityDelaySec: delayEnabled ? (Number.parseInt(document.getElementById("ruleVisibilityDelay").value, 10) || 0) : 0,
+        turnModeEnabled: document.getElementById("turnModeEnabled").checked,
+        turnMinSec: turnSec,
+        turnMaxSec: turnSec,
+        handoverEnabled: document.getElementById("handoverEnabled").checked,
+        handoverSec: Number.parseInt(document.getElementById("handoverSec").value, 10) || 12,
+        noUndoEnabled: document.getElementById("noUndoEnabled").checked,
+        scoreboardEnabled: true
+      };
+    }
+
+    function setStatus(text) { document.getElementById("status").textContent = text; }
+    let applyRulesTimeout = null;
+
+    function emitGlobalRulesLive() {
+      if (applyRulesTimeout) clearTimeout(applyRulesTimeout);
+      applyRulesTimeout = setTimeout(() => {
+        const rules = collectGlobalRulesFromUi();
+        socket.emit("updateRules", rules);
+        renderActiveRules(rules);
+        setStatus("Globale Regeln live aktualisiert");
+      }, 120);
+    }
+
+    function renderParticipants(participants) {
+      const body = document.getElementById("participantsBody");
+      body.innerHTML = "";
+      (participants || []).forEach((p) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${p.name || "(noch nicht beigetreten)"}</td>
+          <td><input type="text" value="${p.group || "Gruppe A"}" data-socket-id="${p.socketId}" style="width:140px;"></td>
+        `;
+        body.appendChild(tr);
+      });
+
+      body.querySelectorAll("input[data-socket-id]").forEach((input) => {
+        input.addEventListener("change", () => {
+          socket.emit("updateUserGroup", {
+            socketId: input.getAttribute("data-socket-id"),
+            group: input.value
+          });
+        });
+      });
+    }
+
+    function renderScoreboard(rows) {
+      const body = document.getElementById("scoreboardBody");
+      body.innerHTML = "";
+      (rows || []).forEach((r) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${r.name}</td><td>${r.group || "-"}</td><td>${r.messages}</td><td>${r.chars}</td>`;
+        body.appendChild(tr);
+      });
+    }
+
+    function renderTurnInfo(turnState) {
+      const info = document.getElementById("turnInfo");
+      if (!turnState || !turnState.enabled) {
+        info.textContent = "Rhythmus: aus";
+        return;
+      }
+      if (!turnState.writerName) {
+        info.textContent = "Rhythmus: wartet auf Teilnehmer*in";
+        return;
+      }
+      info.innerHTML = `Rhythmus aktiv: <span class="turn-highlight">${turnState.writerName}</span> schreibt gerade.`;
+    }
+
+    function exportSettings() {
+      const rules = collectGlobalRulesFromUi();
+      const data = { globalRules: rules, transformRules: getTransformRules() };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "seminar-settings.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      setStatus("Einstellungen exportiert");
+    }
+
+    function resetSettings() {
+      if (!confirm("Alle Einstellungen auf Standard zuruecksetzen?")) return;
+      socket.emit("resetRules");
+    }
+
+    function clearChat() {
+      if (!confirm("Den gesamten Chat-Verlauf loeschen? Das kann nicht rueckgaengig gemacht werden.")) return;
+      socket.emit("clearHistory");
+    }
+
+    document.getElementById("applyTransformRulesBtn").addEventListener("click", () => {
+      socket.emit("updateTransformRules", getTransformRules());
+      setStatus("Autocorrect-Regeln gesendet");
+    });
+    document.getElementById("addRuleBtn").addEventListener("click", () => addRule());
+    document.getElementById("loadExampleBtn").addEventListener("click", () => loadExamples());
+    document.getElementById("clearRulesBtn").addEventListener("click", () => clearRules());
+    document.getElementById("importRulesBtn").addEventListener("click", () => {
+      document.getElementById("rulesFileInput").click();
+    });
+
+    document.getElementById("rulesFileInput").addEventListener("change", (event) => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (!Array.isArray(parsed)) throw new Error("invalid");
+          clearRules();
+          parsed.forEach((r) => {
+            const from = String((r && r.from) || "").trim();
+            const to = Array.isArray(r && r.to) ? r.to.join(",") : String((r && r.to) || "");
+            const chance = Math.round((Number((r && r.chance) || 0.7)) * 100);
+            if (from) addRule(from, to, Number.isFinite(chance) ? chance : 70);
+          });
+          setStatus("Autocorrect-Datei geladen");
+        } catch (err) {
+          setStatus("Fehler: Datei konnte nicht gelesen werden");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = "";
+    });
+
+    document.getElementById("importSettingsBtn").addEventListener("click", () => {
+      document.getElementById("settingsFileInput").click();
+    });
+
+    document.getElementById("settingsFileInput").addEventListener("change", (event) => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (!parsed || typeof parsed !== "object") throw new Error("invalid");
+          applySettingsToUi(parsed.globalRules || {}, parsed.transformRules || []);
+          const rules = collectGlobalRulesFromUi();
+          socket.emit("updateRules", rules);
+          if (parsed.transformRules) {
+            socket.emit("updateTransformRules", getTransformRules());
+          }
+          setStatus("Einstellungen geladen und angewendet");
+        } catch {
+          setStatus("Fehler: Einstellungs-Datei konnte nicht gelesen werden");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = "";
+    });
+
+    [
+      "visibilityDelayEnabled",
+      "ruleVisibilityDelay",
+      "maxCharsEnabled",
+      "ruleMaxChars",
+      "timeLimitEnabled",
+      "ruleTimeLimit",
+      "turnModeEnabled",
+      "turnSec",
+      "handoverEnabled",
+      "handoverSec",
+      "noUndoEnabled"
+    ].forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const eventName = el.tagName === "INPUT" && el.type === "number" ? "input" : "change";
+      el.addEventListener(eventName, emitGlobalRulesLive);
+    });
+
+    document.getElementById("adminLoginBtn").addEventListener("click", attemptAdminLogin);
+    document.getElementById("adminPassword").addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        attemptAdminLogin();
+      }
+    });
+
+    setLockedState(true);
+
+    socket.on("connect", () => {
+      const savedPassword = localStorage.getItem(ADMIN_PASSWORD_KEY);
+      if (!savedPassword) {
+        lockAdminUi("Bitte Passwort eingeben");
+        return;
+      }
+      document.getElementById("adminPassword").value = savedPassword;
+      socket.emit("adminLogin", savedPassword);
+    });
+
+    socket.on("disconnect", () => {
+      lockAdminUi("Verbindung getrennt. Bitte kurz warten oder Passwort erneut senden.");
+    });
+
+    socket.on("adminAuthResult", (payload) => {
+      if (payload && payload.ok) {
+        unlockAdminUi(document.getElementById("adminPassword").value);
+        return;
+      }
+
+      localStorage.removeItem(ADMIN_PASSWORD_KEY);
+      lockAdminUi("Passwort falsch.");
+    });
+
+    socket.on("adminData", (payload) => {
+      applySettingsToUi(payload.rules || {}, payload.transformRules || []);
+      renderParticipants(payload.participants || []);
+      renderScoreboard(payload.scoreboard || []);
+      renderTurnInfo(payload.turnState || {});
+      setStatus("Synchronisiert");
+    });
+    socket.on("participants", (participants) => renderParticipants(participants || []));
+    socket.on("scoreboardUpdate", (rows) => renderScoreboard(rows || []));
+    socket.on("turnState", (state) => renderTurnInfo(state || {}));
+    socket.on("adminTransformRulesUpdated", () => setStatus("Autocorrect gespeichert"));
+    socket.on("adminGroupsUpdated", () => setStatus("Gruppenzuordnung gespeichert"));
+    socket.on("historyClear", () => setStatus("Chat wurde geleert"));
+  </script>
+</body>
+</html>

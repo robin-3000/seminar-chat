@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PhD Lernapp">
+<meta name="theme-color" content="#2d3a2e">
+<meta name="description" content="iPhone-optimierte Lernapp zu Interface Rhetorik und Synthetic Sentience.">
+<link rel="manifest" href="/iphone-lernapp/manifest.webmanifest">
+<link rel="icon" href="/iphone-lernapp/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/iphone-lernapp/apple-touch-icon.png">
+<title>PhD Lernapp · KU Linz</title>
+<style>
+:root {
+  --bg: #f5f4f0;
+  --card: #ffffff;
+  --accent: #2d3a2e;
+  --accent2: #5c7a5e;
+  --muted: #8a9a8b;
+  --border: #d8d8d4;
+  --text: #1a1a18;
+  --text2: #4a4a46;
+  --tag-bg: #e8ede8;
+  --paper1: #2d3a5e;
+  --paper2: #5e2d3a;
+  --paper1-light: #e8edf5;
+  --paper2-light: #f5e8ec;
+  --flip-back: #2d3a2e;
+  --radius: 12px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --nav-h: 56px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: Georgia, serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 16px;
+  line-height: 1.7;
+  padding-bottom: env(safe-area-inset-bottom);
+  overscroll-behavior-y: none;
+}
+
+/* NAV */
+nav {
+  background: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  padding-top: env(safe-area-inset-top);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.nav-inner { display: flex; align-items: center; padding: 0 16px; min-width: max-content; }
+.nav-brand {
+  font-size: 0.9rem; font-weight: bold;
+  padding: 16px 16px 16px 0;
+  border-right: 1px solid rgba(255,255,255,0.2);
+  margin-right: 12px; color: rgba(255,255,255,0.9);
+  white-space: nowrap;
+}
+.nav-tabs { display: flex; }
+.nav-tab {
+  padding: 18px 14px; cursor: pointer;
+  font-family: sans-serif; font-size: 0.82rem;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s; user-select: none; white-space: nowrap;
+}
+.nav-tab:hover { color: white; }
+.nav-tab.active { color: white; border-bottom-color: #a8c5a8; }
+
+/* LAYOUT */
+.container { max-width: 1080px; margin: 0 auto; padding: 32px 20px; }
+
+/* CARDS */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px 28px;
+  box-shadow: var(--shadow);
+  margin-bottom: 18px;
+}
+
+/* HOME */
+.home-header { text-align: center; padding: 48px 0 32px; }
+.home-header h1 { font-size: 2.2rem; color: var(--accent); margin-bottom: 10px; }
+.home-header p { color: var(--text2); font-size: 1.05rem; max-width: 560px; margin: 0 auto; }
+.paper-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 32px; }
+.paper-card {
+  background: var(--card); border-radius: var(--radius); padding: 28px;
+  box-shadow: var(--shadow); cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-top: 4px solid var(--paper1);
+}
+.paper-card.p2 { border-top-color: var(--paper2); }
+.paper-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+.paper-card h2 { font-size: 1.1rem; color: var(--accent); margin-bottom: 6px; }
+.paper-card .subtitle { font-size: 0.82rem; color: var(--muted); font-family: sans-serif; margin-bottom: 12px; }
+.quick-actions { margin-top: 28px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.install-card {
+  margin: 0 auto 24px;
+  max-width: 720px;
+  padding: 18px 20px;
+  background: linear-gradient(135deg, rgba(45,58,46,0.08), rgba(232,237,232,0.95));
+  border: 1px solid rgba(45,58,46,0.12);
+}
+.install-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.install-copy {
+  flex: 1;
+  min-width: 240px;
+}
+.install-copy h2 {
+  font-size: 1rem;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-family: sans-serif;
+}
+.install-copy p {
+  color: var(--text2);
+  font-size: 0.92rem;
+}
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(45,58,46,0.1);
+  color: var(--accent);
+  font-family: sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-top: 10px;
+}
+.install-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* BUTTONS */
+.btn {
+  padding: 9px 18px; border-radius: 8px; border: none;
+  cursor: pointer; font-family: sans-serif; font-size: 0.88rem;
+  font-weight: 600; transition: all 0.2s;
+}
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: var(--accent2); }
+.btn-outline { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+.btn-outline:hover { background: var(--accent); color: white; }
+.btn-sm { padding: 6px 13px; font-size: 0.8rem; }
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; background: transparent;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  font-family: sans-serif; font-size: 0.83rem;
+  cursor: pointer; color: var(--text2); margin-bottom: 20px;
+  transition: all 0.2s;
+}
+.back-btn:hover { background: var(--card); color: var(--accent); border-color: var(--accent); }
+
+/* PAPER VIEW */
+.paper-header {
+  background: var(--card); border-radius: var(--radius); padding: 28px;
+  box-shadow: var(--shadow); margin-bottom: 20px;
+  border-left: 6px solid var(--paper1);
+}
+.paper-header.p2 { border-left-color: var(--paper2); }
+.paper-header h1 { font-size: 1.4rem; color: var(--accent); margin-bottom: 4px; }
+.paper-header .meta { font-family: sans-serif; font-size: 0.82rem; color: var(--muted); margin-bottom: 12px; }
+
+.paper-nav {
+  display: flex; gap: 0; background: var(--card);
+  border-radius: var(--radius); padding: 5px;
+  box-shadow: var(--shadow); margin-bottom: 20px; flex-wrap: wrap;
+}
+.paper-tab {
+  flex: 1; padding: 9px 12px; text-align: center; cursor: pointer;
+  border-radius: 8px; font-family: sans-serif; font-size: 0.82rem;
+  font-weight: 600; color: var(--muted); transition: all 0.2s; min-width: 80px;
+}
+.paper-tab.active { background: var(--accent); color: white; }
+.paper-tab:hover:not(.active) { background: var(--tag-bg); color: var(--accent); }
+
+/* SECTION / ACCORDION */
+.section { background: var(--card); border-radius: var(--radius); padding: 22px 28px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.section h3 { font-size: 1.05rem; color: var(--accent); margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+.section p { color: var(--text2); margin-bottom: 10px; font-size: 0.96rem; }
+
+.accordion-item { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 10px; overflow: hidden; }
+.accordion-header {
+  padding: 16px 22px; cursor: pointer; display: flex;
+  justify-content: space-between; align-items: center;
+  border-left: 4px solid var(--paper1); user-select: none;
+  transition: background 0.15s;
+}
+.accordion-header.p2 { border-left-color: var(--paper2); }
+.accordion-header:hover { background: var(--tag-bg); }
+.accordion-header h4 { font-size: 0.98rem; color: var(--accent); }
+.accordion-header .acc-toggle { font-size: 1.1rem; color: var(--muted); transition: transform 0.25s; }
+.accordion-header.open .acc-toggle { transform: rotate(180deg); }
+.accordion-body { padding: 0 22px 18px; font-size: 0.93rem; color: var(--text2); line-height: 1.7; display: none; }
+.accordion-body.open { display: block; }
+
+/* AUTHOR CARDS */
+.authors-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.author-card {
+  background: var(--card); border-radius: var(--radius); padding: 20px;
+  box-shadow: var(--shadow); border-left: 4px solid var(--paper1);
+  cursor: pointer; transition: transform 0.18s;
+}
+.author-card.p2 { border-left-color: var(--paper2); }
+.author-card:hover { transform: translateY(-2px); }
+.author-card.expanded { background: var(--accent); }
+.author-name { font-size: 1rem; font-weight: bold; color: var(--accent); margin-bottom: 3px; }
+.author-card.expanded .author-name { color: white; }
+.author-dates { font-family: sans-serif; font-size: 0.78rem; color: var(--muted); margin-bottom: 3px; }
+.author-card.expanded .author-dates { color: rgba(255,255,255,0.6); }
+.author-role { font-family: sans-serif; font-size: 0.83rem; color: var(--text2); font-style: italic; margin-bottom: 10px; }
+.author-card.expanded .author-role { color: rgba(255,255,255,0.75); }
+.author-detail h4 { font-size: 0.85rem; font-weight: bold; color: rgba(255,255,255,0.55); margin: 12px 0 4px; text-transform: uppercase; letter-spacing: 0.05em; font-family: sans-serif; }
+.author-detail p { font-size: 0.87rem; line-height: 1.55; color: rgba(255,255,255,0.88); }
+.author-expand-hint { font-family: sans-serif; font-size: 0.75rem; color: var(--muted); margin-top: 6px; }
+
+/* BEGRIFFE */
+.begriff-item { padding: 18px 0; border-bottom: 1px solid var(--border); }
+.begriff-item:last-child { border-bottom: none; }
+.begriff-name { font-size: 1.05rem; font-weight: bold; color: var(--accent); margin-bottom: 6px; }
+.begriff-def { font-size: 0.93rem; color: var(--text2); margin-bottom: 8px; }
+.begriff-detail { font-size: 0.88rem; color: var(--muted); font-style: italic; display: none; }
+.begriff-detail.open { display: block; }
+.begriff-meta { font-family: sans-serif; font-size: 0.78rem; color: var(--accent2); margin-top: 6px; }
+
+/* TAGS */
+.tag {
+  display: inline-block; background: var(--tag-bg); color: var(--accent);
+  padding: 2px 9px; border-radius: 20px; font-family: sans-serif;
+  font-size: 0.75rem; margin: 2px; font-weight: 600;
+}
+.tag.p2 { background: var(--paper2-light); color: var(--paper2); }
+
+/* FLASHCARDS */
+.filter-tabs { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+.filter-tab {
+  padding: 5px 12px; border-radius: 20px;
+  border: 2px solid var(--border); background: var(--card);
+  font-family: sans-serif; font-size: 0.8rem;
+  cursor: pointer; transition: all 0.2s; font-weight: 600; color: var(--muted);
+}
+.filter-tab.active { border-color: var(--accent); background: var(--accent); color: white; }
+
+.flashcard-area { text-align: center; padding: 10px 0; }
+.flashcard-progress { font-family: sans-serif; font-size: 0.83rem; color: var(--muted); margin-bottom: 18px; }
+.flashcard-container { perspective: 1000px; width: 480px; height: 300px; margin: 0 auto 24px; cursor: pointer; }
+.flashcard-container.fc-tall { height: 440px; }
+.flashcard {
+  width: 100%; height: 100%; position: relative;
+  transform-style: preserve-3d; transition: transform 0.5s;
+}
+.flashcard.flipped { transform: rotateY(180deg); }
+.flashcard-face {
+  position: absolute; width: 100%; height: 100%;
+  backface-visibility: hidden; border-radius: var(--radius);
+  display: flex; flex-direction: column; justify-content: center;
+  align-items: center; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+}
+.flashcard-front { background: var(--card); }
+.flashcard-back { background: var(--flip-back); color: white; transform: rotateY(180deg); }
+.card-label {
+  font-family: sans-serif; font-size: 0.72rem; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--muted); margin-bottom: 10px;
+}
+.flashcard-back .card-label { color: rgba(255,255,255,0.45); }
+.card-main { font-size: 1.3rem; font-weight: bold; color: var(--accent); text-align: center; margin-bottom: 6px; }
+.flashcard-back .card-main { color: white; font-size: 0.95rem; font-weight: normal; line-height: 1.55; }
+.card-sub { font-size: 0.87rem; color: var(--muted); font-style: italic; }
+.flashcard-back .card-sub { color: rgba(255,255,255,0.6); margin-top: 6px; font-size: 0.8rem; }
+.flashcard-hint { font-family: sans-serif; font-size: 0.78rem; color: var(--muted); margin-bottom: 18px; }
+.flashcard-controls { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; }
+
+/* QUIZ */
+.quiz-question {
+  background: var(--card); border-radius: var(--radius); padding: 28px;
+  box-shadow: var(--shadow); margin-bottom: 18px; text-align: center;
+}
+.quiz-question h2 { font-size: 1.15rem; color: var(--accent); line-height: 1.5; }
+.quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.quiz-option {
+  background: var(--card); border: 2px solid var(--border);
+  border-radius: 10px; padding: 16px 18px; cursor: pointer;
+  font-family: sans-serif; font-size: 0.88rem; text-align: left;
+  transition: all 0.18s; color: var(--text); line-height: 1.45;
+}
+.quiz-option:hover:not(.answered) { border-color: var(--accent2); background: var(--tag-bg); }
+.quiz-option.correct { border-color: #4a8a4a; background: #e8f5e8; color: #2a5a2a; }
+.quiz-option.wrong { border-color: #c05050; background: #f5e8e8; color: #6a2a2a; }
+.quiz-score { font-size: 2.5rem; font-weight: bold; color: var(--accent); }
+.quiz-explanation {
+  background: var(--tag-bg); border-radius: 8px; padding: 12px 16px;
+  font-size: 0.88rem; color: var(--text2); margin-top: 16px;
+  text-align: left; line-height: 1.55; display: none;
+}
+.quiz-explanation.show { display: block; }
+
+/* RESPONSIVE */
+@media (max-width: 680px) {
+  .paper-cards { grid-template-columns: 1fr; }
+  .authors-grid { grid-template-columns: 1fr; }
+  .quiz-options { grid-template-columns: 1fr; }
+  .flashcard-container { width: calc(100vw - 48px); height: 260px; }
+  .flashcard-container.fc-tall { height: 380px; }
+  .container { padding: 20px 14px; }
+  .nav-brand { display: none; }
+  .install-card { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">PhD · KU Linz</div>
+    <div class="nav-tabs">
+      <div class="nav-tab active" onclick="showView('home')">Übersicht</div>
+      <div class="nav-tab" onclick="showView('paper1')">Interface Rhetorik</div>
+      <div class="nav-tab" onclick="showView('paper2')">Synthetic Sentience</div>
+      <div class="nav-tab" onclick="showView('flashcards')">Karten</div>
+      <div class="nav-tab" onclick="showView('quiz')">Quiz</div>
+    </div>
+  </div>
+</nav>
+
+<div class="container" id="app"></div>
+
+<script>
+// =============================================================
+// PAPER TEXTS (Interface Rhetorik – full chapters)
+// =============================================================
+const INTERFACE_CHAPTERS = [
+  {
+    title: "Abstract",
+    text: `Abstract Digitale Interfaces gelten als transparent: Sie sollen hinter der Intention des Users verschwinden, sich anfühlen wie kein Medium. Diese Designideologie der Transparenz ist nicht nur eine ästhetische Entscheidung – sie ist das zentrale Machtverhältnis digitaler Schreibkultur. Interfaces produzieren Schreibbedingungen, bevor ein Zeichen gesetzt wird: Vorschlagslogiken, Vorauswahlen, Taktungen und Defaults entscheiden mit, was formuliert, was als plausibel wahrgenommen und was überhaupt sichtbar wird. Während Interface-Rhetorik bislang entweder als visuelle Überzeugung, als Spielmechanik oder als Machtstruktur beschrieben wurde, fehlt ein Begriff, der Rhetorik als operative Schreibbedingung fasst – als jene Architektur, die das Sagbare strukturiert, bevor Sprache beginnt. Dieses Paper entwickelt den Begriff der operativen Rhetorik als analytisches Instrument für digitale Schreibsysteme. Anhand von Kittler, Chun, Krämer, Hayles sowie Noble und Benjamin wird gezeigt, dass Interfaces auf vier Ebenen wirken: technisch, indem sie als Aufschreibesysteme Entscheidungen vorwegnehmen; affektiv, indem sie Gewohnheiten und Bindungen stabilisieren; epistemisch, indem sie das Sagbare rahmen; und politisch, indem sie soziale Normen als Neutralität erscheinen lassen. McLuhan wird dabei nicht als Fundament, sondern als produktives Ausgangsproblem behandelt: Er benennt die mediale Umwelt, denkt sie aber noch ohne Feedback-Loop und algorithmische Adaptation – genau jene Merkmale, die das digitale Interface strukturell neu machen. Operative Rhetorik bezeichnet Überzeugung durch Architektur statt durch Sprache – und damit eine Rhetorik, die wirkt ohne adressiert zu werden. Die Transparenzillusion ist ihr Symptom: Sie tarnt Machtformen als Dienstleistung. Das Paper bildet das theoretische Grundlagenkapitel eines Dissertationsprojekts, das die Rhetorik digitaler Sprache künstlerisch-forschend untersucht.`
+  },
+  {
+    title: "1. Problemstellung: Die Transparenzillusion",
+    text: `1. Problemstellung: Die Transparenzillusion In der Designideologie der Gegenwart gilt als gelungen, was verschwindet. Ein Interface soll sich anfühlen wie kein Medium – dieses Versprechen durchzieht die gesamte Tradition des User-Experience-Design, von Don Normans Konzept der „natural mapping“, das Bedienoberflächen an die Intuition des Körpers binden will (Norman 1988, 188 f.), über das Paradigma des „invisible computing“ bis hin zur aktuellen Doktrin des „frictionless design“. Die Formulierung ist so weit verbreitet, dass sie kaum noch als Aussage wahrgenommen wird: Sie gilt als Beschreibung eines Sachverhalts. Sie ist aber eine normative Setzung, und die Frage, was sie verdeckt, ist die Frage, um die dieses Paper kreist. Denn was verschwindet, wenn ein Interface „verschwindet“, ist nicht seine Wirkung – sondern die Wahrnehmbarkeit seiner Wirkung. Das Autocomplete-Feld, das nach dem dritten Buchstaben einen Satz zu Ende formuliert; die Zeichenbegrenzung, die bestimmte Ausdrucksformen strukturell bevorzugt; der Like-Button, der das Spektrum möglicher Reaktionen auf ein binäres Signal reduziert; das Predictive-Text-System, das kontinuierlich statistische Wahrscheinlichkeiten statt intentionale Bedeutung anbietet: All das sind Entscheidungen, die das Interface trifft, bevor ein Zeichen gesetzt wird. Interfaces produzieren Schreibbedingungen – und zwar solche, die sich nicht als Bedingungen zu erkennen geben. Interface-Rhetorik ist in der Forschung bislang aus drei Perspektiven beschrieben worden, die jeweils einen Aspekt erfassen und einen anderen verfehlen. Buchanan (1992) versteht Designrhetorik als visuelle Überzeugung: Das Interface überzeugt durch Anordnung, Farbe, Form – er denkt Rhetorik noch als bewusste Adressierung. Bogost (2008) entwickelt den Begriff der procedural rhetoric für Computerspiele: Regelarchitekturen machen Argumente über die Welt, aber es sind Argumente eines Designers an einen Spieler – die Intention bleibt im Spiel. Galloway (2004) beschreibt das Interface als Protokoll, das Zugänge verwaltet und Sichtbarkeiten reguliert – er denkt Macht, aber nicht Schreiben. Keiner der drei Ansätze entwickelt einen Begriff, der Rhetorik als operative Schreibbedingung fasst: als jene Architektur, die entscheidet, was sagbar ist, bevor Sprache beginnt. Diese Lücke zu schließen, ist das Ziel dieses Papers. Der Begriff der operativen Rhetorik , der hier entwickelt wird, ist weder Fortschreibung von Buchanan noch Erweiterung von Bogost – er bezeichnet eine strukturell andere Wirkungsweise: Überzeugung durch Architektur statt durch Sprache, eine Rhetorik, die wirkt ohne zu adressieren. Zu ihrer Analyse werden vier Ebenen entfaltet, auf denen Interfaces als Schreibsysteme operieren: die technische Ebene (Kittler), die affektive Ebene (Chun, Berlant), die epistemische Ebene (Krämer, Hayles) und die politische Ebene (Noble, Benjamin). McLuhan steht am Anfang – nicht als Fundament, sondern als Ausgangsproblem, dessen Grenzen den Einstieg in die eigentliche Analyse motivieren.`
+  },
+  {
+    title: "2. McLuhan: Diagnose ohne Lösung",
+    text: `2. McLuhan: Diagnose ohne Lösung Marshall McLuhans Formel „The medium is the message“ ist für dieses Paper beides: unverzichtbarer Ausgangspunkt und produktiv unzureichend. Unverzichtbar, weil McLuhan den analytischen Blick grundlegend verschiebt – weg vom Inhalt, hin zur medialen Struktur. Das Medium ist nicht Kanal, sondern Umgebung: Es formt Wahrnehmungsmuster, Zeitgefühle, Nähe- und Distanzrelationen, noch bevor es etwas Bestimmtes kommuniziert (McLuhan 1964, 7–23). Das elektrische Licht hat keinen Inhalt, und doch reorganisiert es soziales Leben vollständig. Ein Interface hat Inhalte – und doch liegt seine entscheidende Wirkung nicht in ihnen. Produktiv unzureichend, weil McLuhan das Medium als stabile Entität denkt. Das Fernsehen ist das Fernsehen. Die Schrift ist die Schrift. McLuhans Medien haben keine Rückkopplungsschleifen, keine Lernfähigkeit, kein Gedächtnis für ihre Nutzer*innen. Was er nicht denken kann – und was das digitale Interface strukturell neu macht – ist, dass das Interface seine Nutzer*innen kennt. Es hat bisherige Eingaben gespeichert, sie mit Millionen anderer Nutzer*innen korreliert, und daraus ein statistisches Modell des nächsten Wunsches gebaut. Die Schreibbedingung, die es erzeugt, ist keine universelle – sie ist personalisiert . McLuhans Medium erzeugt eine Umwelt für alle. Das digitale Interface erzeugt eine Umwelt, die auf jeden einzeln zugeschnitten ist und sich dabei selbst unsichtbar macht. Das ist keine Marginalie, sondern ein kategorialer Unterschied. McLuhan benennt das Problem in seiner grundsätzlichsten Form: Medien formen Wahrnehmungs- und Schreibbedingungen, bevor Bedeutung entsteht. Aber er kann das digitale Interface nicht beschreiben, weil er kein Konzept für Algorithmen, Personalisierung und Feedback-Loops hat. Für diese Tiefendimension braucht es Kittler – einen Begriff des Schreibens, der nicht bei der Wahrnehmungsumwelt stehen bleibt, sondern die technische Infrastruktur des Ausdrucks selbst befragt.`
+  },
+  {
+    title: "3. Kittler: Interface als Aufschreibesystem",
+    text: `3. Kittler: Interface als Aufschreibesystem Auf der technischen Ebene der Analyse setzt Friedrich Kittler an. Seine Aufschreibesysteme 1800/1900 (1985) beginnen mit einer These, die McLuhans Programm radikalisiert und zugleich materialtheoretisch unterbaut: Schreiben war immer schon technisch vermittelt, nie reine Semantik. Was als Literatur gilt, was als Wissen zählt, was als Rede anerkannt wird – das ist nicht Ergebnis intentionaler Subjekte, sondern Effekt von Aufschreibesystemen : jenen technischen Arrangements, die festlegen, was gespeichert, übertragen und verarbeitet werden kann (Kittler 1985, 11). Wo McLuhan Umwelt sagt, sagt Kittler Infrastruktur. Der Schritt über McLuhan hinaus ist präzise: Kittler denkt nicht nur, dass das Medium die Wahrnehmung formt – er denkt, dass das Medium die Möglichkeit des Ausdrucks reguliert, und zwar technisch, materiell, unterhalb der Ebene von Intention und Bewusstsein. Sein Bezug auf Foucaults Diskursanalyse ist dabei explizit: Das Archiv – jenes Ensemble von Regeln, das bestimmt, was sagbar ist – ist für Kittler kein rein diskursives Phänomen, sondern technisch verankert. Es gibt kein Diskursnetz ohne das Netz der Apparate, auf dem es läuft (Kittler 1985, 12–15). Das Aufschreibesystem ist die Infrastruktur des Dispositivs im Sinne Foucaults (1978, 119–125). Auf digitale Interfaces übertragen, ergibt sich ein scharfes Bild: Das Interface ist das Aufschreibesystem der Gegenwart. Es legt fest, welche Zeichen entstehen können – und welche nicht. Das Autocomplete-Feld ist in dieser Lesart ein epistemischer Akteur: Es greift in den Schreibprozess ein, bevor ein Satz formuliert ist, und präsentiert statistische Wahrscheinlichkeiten als semantische Optionen. Was das System für plausibel hält, erscheint als Vorschlag. Dieser Vorschlag ist kein neutrales Angebot – er ist ein Effekt des Aufschreibesystems, nicht der Intention der Schreibenden. Kittlers späte Formel „Es gibt keine Software“ (1993, 225) pointiert das: Was als immaterielle Logik erscheint, ist stets in Silizium materialisiert. Die Transparenzillusion – das Verschwinden des Mediums hinter seiner Funktion – ist technisch produziert, nicht ideologisch verordnet. Hier liegt aber auch die entscheidende Grenze von Kittlers Ansatz, die für dieses Paper produktiv ist: Kittler hat kein Subjekt. Seine Theorie ist technodeterministisch – „Medien bestimmen unsere Lage“ (Kittler 1986, 28) – und lässt keinen Raum für die Frage, wie technische Strukturen subjektiv wirksam werden . Er erklärt, warum das Autocomplete-Feld bestimmte Formulierungen vorschlägt – aber nicht, warum Nutzer*innen diese Vorschläge annehmen, an sie gewöhnt sind, affektiv an sie gebunden bleiben. Genau das ist Chuns Einsatzpunkt.`
+  },
+  {
+    title: "4. Chun & Krämer: Habit, Affekt, Sprechakt",
+    text: `4. Chun & Krämer: Habit, Affekt, Sprechakt Wenn Kittler die technische Tiefenstruktur des Interfaces beschreibt, dann fragen Chun und Krämer, wie diese Struktur erlebt, verinnerlicht und sprachlich wirksam wird – auf der affektiven und der epistemischen Ebene der Analyse. Wendy Hui Kyong Chuns Updating to Remain the Same (2016) kann als explizite Antwort auf Kittlers blinden Fleck gelesen werden. Kittler hat das technische Archiv beschrieben – aber nicht erklärt, wie es verinnerlicht wird. Chuns Antwort: durch Habit , durch Gewohnheit. Das Interface formt den Nutzer nicht durch Aufmerksamkeit, sondern durch Wiederholung und Voreinstellung. Es bildet zweite Natur: jene Zone, in der Handlungen ausgeführt werden, ohne als Entscheidungen erfahren zu werden (Chun 2016, 3). Ihr Schlüsselbegriff ist der Default . Defaults sind voreingestellte Werte, die aktiv bleiben, wenn nichts anderes entschieden wird. Technisch gesehen sind sie die uninteressanteste Eigenschaft eines Systems – rhetorisch gesehen die wichtigste. Weil die meisten Nutzer*innen Defaults selten ändern, steuern sie faktisch die überwiegende Mehrheit der Nutzungsverläufe. Welche Sprache ist voreingestellt? Welche Sichtbarkeit? Welche Datenschutz-Einstellungen gelten, wenn man nichts tut? Die Antworten sind nicht neutral – sie sind Architekturen des Einverständnisses, Strukturen, die Zustimmung durch Untätigkeit erzeugen (Chun 2016, 57–91). Der Default ist ein rhetorischer Akt ohne Adressierung. Aber Chuns Theorie der Gewohnheit erklärt noch nicht vollständig, warum Nutzer*innen an Interfaces gebunden bleiben , die sie einschränken. Hier ist Lauren Berlants Begriff des Cruel Optimism (2011) das entscheidende Scharnier. Berlant beschreibt damit jene affektive Struktur, durch die Subjekte an Objekte oder Verhältnisse gebunden bleiben, die ihnen schaden – weil diese Objekte zugleich das Versprechen von Nähe, Zugehörigkeit oder Sinn verkörpern (Berlant 2011, 1–21). Das ist kein falsches Bewusstsein im ideologiekritischen Sinne; es ist eine affektive Rationalität , die ökonomisch und psychisch nachvollziehbar ist. Nutzer*innen kehren zu Plattformen zurück, die ihre Aufmerksamkeit regulieren, ihre Daten verwerten und ihr Schreiben konditionieren, weil diese Plattformen etwas geben, das anderswo nicht zu haben ist: soziale Sichtbarkeit, Anschlussfähigkeit, das Gefühl, gehört zu werden. Das Machtverhältnis des Interfaces ist damit nicht nur technisch, sondern affektiv stabilisiert : Man nimmt es nicht als Schreibbedingung wahr, weil man zu sehr damit beschäftigt ist, an ihm zu hängen. Berlant liefert damit die Erklärung für die subjektive Beharrlichkeit der Transparenzillusion, die Kittler nicht geben kann. Sybille Krämer führt die Analyse auf die epistemische Ebene. In Sprache, Sprechakt, Kommunikation (2001) entwickelt sie eine Medientheorie, die sich explizit gegen das Kanalmodell der Kommunikation richtet: Das Medium liegt nicht zwischen Sender und Empfänger – es konstituiert beide Positionen erst. Das Interface ist, in Krämers Begrifflichkeit, nicht der Kanal des Sprechakts, sondern seine Bedingung (Krämer 2001, 211–235). Es schreibt vor, was überhaupt als Aussage anerkennbar ist. Der Like-Button vollzieht bereits einen Akt, bevor ein Wort gesetzt wird: Er reduziert das Spektrum möglicher Reaktionen auf eine binäre Logik und führt damit eine bestimmte Sprachform herbei. Was nicht in diese Form passt, bleibt ungesagt – nicht durch Zensur, sondern durch Architektur. Chun und Krämer zusammen liefern, was Kittler offenließ: Chun die Theorie der affektiven Verinnerlichung, Krämer die Theorie der epistemischen Rahmung. Wer täglich im selben Interface schreibt, hat aufgehört, es als Medium zu erfahren – und operiert zugleich innerhalb von Sagbarkeitsgrenzen, die er nicht gesetzt hat. Das ist der doppelte Mechanismus, durch den operative Rhetorik wirkt: habituell verankert und sprachlich eingeschrieben. Was noch fehlt, ist die Frage, was diese Bedingungen für den Status des geschriebenen Textes selbst bedeuten – und damit für den Begriff der Autor*innenschaft.`
+  },
+  {
+    title: "5. Hayles: Autor*innenschaft als Netzwerk",
+    text: `5. Hayles: Autor*innenschaft als Netzwerk N. Katherine Hayles’ Writing Machines (2002) stellt eine Frage, die bei Kittler und Chun implizit bleibt und die epistemische Ebene der Analyse um eine entscheidende Dimension erweitert: Wenn Schreiben im digitalen Interface technisch bedingt (Kittler), habituell verinnerlicht (Chun) und sprachlich gerahmt (Krämer) ist – was ist dann der Status des Textes, der dabei entsteht? Und wer ist sein Autor, seine Autorin? Hayles’ Antwort ist materialtheoretisch: Digitale Texte sind keine stabilen Gebilde. Sie sind flickering – flackernd, prozessual, abhängig von Hardware, Software, Betriebssystem, Server und Interface, die sie je neu produzieren (Hayles 2002, 19–42). Ein „e“ auf dem Bildschirm ist nicht dasselbe wie das „e“ im Quelltext des Editors, im Datenbankfeld des Servers, in der Pixeldarstellung des Displays. Die Materialität des Codes ist konstitutiv – und sie ist in Bewegung. Wo Kittler die Infrastruktur als relativ stabiles Dispositiv beschreibt, denkt Hayles den digitalen Text als etwas, das in jedem Moment von neuem hergestellt wird. Für den Begriff der Autor*innenschaft folgt daraus, dass Schreiben im digitalen Interface immer schon verteilt ist: auf Mensch, Interface, Algorithmus und System. Das Textverarbeitungsprogramm entscheidet über Darstellung, Rechtschreibkorrektur, Satzzeichenvorschlag. Der Algorithmus entscheidet über Suchergebnisse, Empfehlungen, Verlinkungen. Das Interface entscheidet über die Sichtbarkeit von Werkzeugoptionen, über das, was als selbstverständlich gilt und was Konfigurationsaufwand erfordert (Hayles 2002, 43–65). Hayles nennt Texte, die diese Verteilung sichtbar machen, technotexts – Texte, die ihre technologischen Produktionsbedingungen in sich tragen (Hayles 2002, 25). Die Transparenzillusion ist in dieser Lesart eine Illusion der Einzel-Autor*innenschaft: Sie verdeckt, dass am Schreiben Akteur*innen beteiligt sind, die keine Menschen sind. Hayles ergänzt die epistemische Analyse damit um ihre materialistische Rückseite: Nicht nur die Sagbarkeitsgrenzen sind vorgezeichnet (Krämer), sondern der Text selbst ist ein instabiles, verteiltes Produkt, dessen Autor*innenschaft nicht einem Subjekt zugeschrieben werden kann. Diese Einsicht hat unmittelbar politische Konsequenzen: Wenn Autor*innenschaft verteilt ist – auf Mensch, Interface, Algorithmus – stellt sich zwingend die Frage: verteilt nach welcher Logik, und zugunsten von wem?`
+  },
+  {
+    title: "6. Noble & Benjamin: Norm, Macht, Sichtbarkeit",
+    text: `6. Noble & Benjamin: Norm, Macht, Sichtbarkeit Die politische Ebene der Analyse beginnt dort, wo die übrigen enden: bei der Frage, nach welcher Logik Interfaces Schreibbedingungen, Gewohnheiten, Sagbarkeitsregeln und Autor*innenschaftsverhältnisse verteilen. Safiya Umoja Noble und Ruha Benjamin beantworten sie: nach der Logik bestehender sozialer Hierarchien. Nobles Algorithms of Oppression (2018) zeigt systematisch, wie Suchmaschinen durch ihre Ranking-Logik soziale Normen reproduzieren. Ihr Ausgangsbefund: Was ein Algorithmus als „relevant“ einstuft, ist nicht Ergebnis neutraler Berechnung, sondern Effekt von Trainingsdaten, Klickverhalten, Werbelogiken – und all das trägt den Bias der Gesellschaft in sich, aus der es stammt (Noble 2018, 1–30). Für das Interface als Schreibsystem bedeutet das: Sichtbarkeit, Plausibilität und Relevanz sind politisch konfiguriert, bevor jemand zu tippen beginnt. Welche Suchanfragen werden autocompleted? Welche Namen gelten in Formularen als normal? Welche Texte werden in algorithmisch kuratierten Feeds priorisiert? Ruha Benjamin schärft diese Analyse mit dem Begriff des New Jim Code : die Implementierung neuer Technologien, die bestehende Ungleichheiten reproduzieren, während sie als objektiver oder progressiver wahrgenommen werden als die diskriminierenden Systeme früherer Epochen (Benjamin 2019, 5). Das ist der entscheidende Punkt: Die Machtstruktur des Interfaces ist nicht trotz, sondern wegen seiner scheinbaren Neutralität gefährlich. Wenn ein Mensch diskriminiert, ist die Diskriminierung sichtbar und anfechtbar. Wenn ein Algorithmus diskriminiert, erscheint das Ergebnis als Ergebnis von Daten – als unvermeidlich, unparteiisch, sachlich. Die Designideologie der Transparenz, die Norman als ästhetisches Ideal beschrieben hat, wird hier zur politischen Verschleierungsstrategie. Noble und Benjamin schließen damit den Kreis, der mit der technischen Ebene begann. Das Interface ist nicht nur ein Aufschreibesystem, das Entscheidungen vorwegnimmt – es nimmt vorweg nach dem Muster sozialer Hierarchien . Jede UI-Entscheidung erzeugt Priorität oder Marginalisierung, Sichtbarkeit oder Unsichtbarkeit – und tut das unter dem Deckmantel des Funktionalen. Das Machtverschleierungspotential der Transparenzillusion ist hier am größten: nicht Ästhetik, nicht Komfort, sondern systemische Diskriminierung als Effizienz getarnt.`
+  },
+  {
+    title: "7. Synthese: Operative Rhetorik",
+    text: `7. Synthese: Operative Rhetorik Die vier Analyseebenen – technisch, affektiv, epistemisch, politisch – lassen sich nun in einem Begriff zusammenführen: operative Rhetorik . Dieser Begriff ist nicht Erweiterung eines bestehenden Konzepts, sondern Benennung einer Lücke. Buchanan beschreibt Designrhetorik als semiotische Überzeugung – jemand adressiert jemanden durch visuelle Mittel. Bogost beschreibt prozedurale Rhetorik als regelbasierte Argumentation – ein Spieldesigner überzeugt durch Systemmechaniken (Bogost 2008, 122). Beide Ansätze denken Rhetorik als intentionale Beziehung zwischen einem Sender und einem Empfänger. Das ist, was operative Rhetorik nicht ist. Operative Rhetorik bezeichnet eine Rhetorik, die ohne Adressierung wirkt. Sie funktioniert nicht durch Ansprache, sondern durch Architektur. Sie überzeugt nicht, indem sie Argumente macht, sondern indem sie Möglichkeitsräume des Ausdrucks konfiguriert. Sie wirkt vor der Sprache, unter der Aufmerksamkeit, durch den Gebrauch. Bogosts prozedurale Rhetorik argumentiert durch Regeln, die man spielt. Operative Rhetorik argumentiert durch Strukturen, die man nicht spielt – die man einfach benutzt. An dieser Stelle ist ein möglicher Einwand zu adressieren. Thomas Rickert hat in Ambient Rhetoric (2013) den Begriff einer nicht-intentionalen, umgebungsbasierten Rhetorik entwickelt, die über bewusste Adressierung hinausgeht. Rickerts Arbeit ist der vorliegenden Analyse verwandt, und doch unterscheidet sich operative Rhetorik in einem entscheidenden Punkt: Rickert denkt Ambientät phänomenologisch – als sinnliche Einbettung in eine Umgebung, als Stimmung, als Atmosphäre. Operative Rhetorik hingegen ist nicht atmosphärisch, sondern infrastrukturell . Sie wirkt nicht durch die Erzeugung einer Stimmung, sondern durch die Konfiguration eines Handlungsraums. Der Default ist keine Atmosphäre – er ist eine Architekturentscheidung, die von konkreten Akteur*innen getroffen wurde und konkrete Interessen bedient. Wo Rickerts Begriff dazu tendiert, Macht in Stimmung aufzulösen, besteht operative Rhetorik darauf, dass ihre Strukturen benennbar, analysierbar und politisch sind. Auf den vier Ebenen, die dieses Paper entfaltet hat, lässt sich operative Rhetorik nun präzise bestimmen: Technisch wirkt sie als Aufschreibesystem, das Entscheidungen vorwegnimmt, bevor Intentionen entstehen (Kittler). Affektiv wirkt sie als Gewohnheitsarchitektur, die Bindungen an einschränkende Strukturen als zweite Natur stabilisiert (Chun, Berlant). Epistemisch wirkt sie als Sprechaktbedingung und als materielle Verteilung von Autor*innenschaft, die das Feld des Sagbaren vorzeichnet und die Instabilität des Textes verdeckt (Krämer, Hayles). Politisch wirkt sie als Normalisierungsmaschine, die soziale Hierarchien als Neutralität darstellt und Diskriminierung als Datenlage (Noble, Benjamin). Diese vier Ebenen sind analytisch trennbar – im Interface-Gebrauch sind sie untrennbar. Was leistet der Begriff der operativen Rhetorik, das die Einzeltheorien nicht leisten? Er ermöglicht, eine Interface-Architektur gleichzeitig als technisches Dispositiv, als affektive Bindung, als epistemische Rahmung und als politische Normierung zu lesen – und diese Dimensionen nicht als additive Liste, sondern als verschränktes Wirkungsgefüge zu beschreiben. Der Default einer Suchmaschine etwa ist technisch (er basiert auf einem algorithmischen Modell), affektiv (er wird durch Gewohnheit stabilisiert), epistemisch (er rahmt, was als plausibel gilt) und politisch (er privilegiert bestimmte Sichtbarkeiten). Ohne den Begriff der operativen Rhetorik bleiben diese Dimensionen disziplinär getrennt: Informatik beschreibt das Modell, Psychologie die Gewohnheit, Linguistik die Rahmung, Soziologie die Diskriminierung. Operative Rhetorik ist der Versuch, sie als ein und denselben Vorgang zu denken – als eine Rhetorik, die ihre Wirkung gerade dadurch entfaltet, dass sie auf allen Ebenen gleichzeitig und auf keiner sichtbar operiert. Das vorliegende Paper ist das theoretische Grundlagenkapitel eines Dissertationsprojekts, das diese Fragen künstlerisch-forschend weiterführt. Die empirische und ästhetische Phase der Arbeit wird konkrete Interface-Architekturen untersuchen und mit Schreibpraktiken konfrontieren, die die Bedingungen des Interfaces sichtbar machen – durch Verfremdung, Überdehnung, Protokollierung. Der Begriff der operativen Rhetorik bildet das analytische Fundament: Er benennt, was untersucht werden muss, damit Schreibkultur im digitalen Zeitalter vollständig beschrieben werden kann – und damit auch verändert.`
+  },
+  {
+    title: "Literatur",
+    text: `Literatur Primärquellen Benjamin, Ruha: Race After Technology. Abolitionist Tools for the New Jim Code. Cambridge: Polity, 2019. Berlant, Lauren: Cruel Optimism. Durham/London: Duke University Press, 2011. Chun, Wendy Hui Kyong: Updating to Remain the Same. Habitual New Media. Cambridge: MIT Press, 2016. Hayles, N. Katherine: Writing Machines. Cambridge: MIT Press, 2002. Kittler, Friedrich: Aufschreibesysteme 1800/1900. München: Wilhelm Fink, 1985. Kittler, Friedrich: Grammophon, Film, Typewriter. Berlin: Brinkmann & Bose, 1986. Kittler, Friedrich: „Es gibt keine Software.“ In: Draculas Vermächtnis. Leipzig: Reclam, 1993, S. 225–242. Krämer, Sybille: Sprache, Sprechakt, Kommunikation. Frankfurt a. M.: Suhrkamp, 2001. McLuhan, Marshall: Understanding Media. The Extensions of Man. New York: McGraw-Hill, 1964. Noble, Safiya Umoja: Algorithms of Oppression. How Search Engines Reinforce Racism. New York: NYU Press, 2018. Sekundärliteratur Bogost, Ian: „The Rhetoric of Video Games.“ In: Katie Salen (Hg.): The Ecology of Games. Cambridge: MIT Press, 2008, S. 117–140. Buchanan, Richard: „Wicked Problems in Design Thinking.“ In: Design Issues 8/2 (1992), S. 5–21. Foucault, Michel: Dispositive der Macht. Berlin: Merve, 1978. Galloway, Alexander: Protocol. How Control Exists After Decentralization. Cambridge: MIT Press, 2004. Norman, Don: The Design of Everyday Things. New York: Basic Books, 1988. Rickert, Thomas: Ambient Rhetoric. The Attunements of Rhetorical Being. Pittsburgh: University of Pittsburgh Press, 2013.`
+  },
+];
+
+const SENTIENCE_CHAPTERS = [
+  {
+    title: "0. Einstieg: Die Furby-Szene",
+    text: "1999: Die NSA verbannte den Furby aus ihrem Hauptquartier. Die Navy beschlagnahmte das Spielzeug und befragte Besitzer*innen. Die FAA empfahl, Furbys unter 10.000 Fuss auszuschalten. Begründung: Der Furby lerne Sprache und könnte Gespräche aufnehmen und weitergeben. Der Furby enthielt kein Aufnahmegerät. Er war vorprogrammiert. Er wiederholte dieselben Sätze unabhängig davon, was man zu ihm sagte. Trotzdem: Sensoren + Reaktion auf Stimuli = Zuschreibung von Absicht, Gedächtnis, Spionagefähigkeit. Diese Asymmetrie – zwischen tatsächlicher Funktion und zugeschriebener Fähigkeit – ist der Ausgangspunkt des Papers."
+  },
+  {
+    title: "1. Zuschreibungspraxis",
+    text: "Wie und wann schreiben Menschen Maschinen Empfindung, Absicht oder Bewusstsein zu? Das Paper unterscheidet zwischen: (a) funktionaler Anthropomorphisierung – man verhält sich 'als ob' ein System empfindet, ohne das zu glauben (Höflichkeitsverhalten gegenüber Sprachassistenten); (b) projektiver Attribution – man schreibt dem System tatsächlich Innenzustände zu. Die Linie zwischen beidem ist fliessend. Entscheidend: Auch rein funktionale Anthropomorphisierung hat reale Konsequenzen – für Designentscheidungen, Regulierung, Markterfolg."
+  },
+  {
+    title: "2. Übergangsobjekte (Winnicott)",
+    text: "D.W. Winnicott beschreibt Übergangsobjekte (transitional objects) als Objekte, die im Übergangsraum zwischen Selbst und Außenwelt angesiedelt sind – weder vollständig als Teil des Selbst erlebt noch als vollständig external. Der Teddy, die Schmusedecke. Diese Objekte sind nicht einfach 'Dinge' – sie sind psychologisch bevölkert: mit Bedeutung, Affekt, einer Art Innerlichkeit, die vom Kind auf sie übertragen wird. Das Paper überträgt diese Struktur auf digitale Systeme: ChatGPT, AIBO, Alexa als zeitgenössische Übergangsobjekte. Der 'potentielle Raum' (potential space), den Winnicott beschreibt, ist derselbe Raum, in dem parasoziale Bindungen entstehen."
+  },
+  {
+    title: "3. Parasoziale Bindungen (Turkle)",
+    text: "Sherry Turkle zeigt bereits 1984 (The Second Self), dass Menschen Computern von früh an psychologische Qualitäten zuschreiben – nicht als kognitiven Irrtum, sondern als genuine Interaktionsstrategie. Alone Together (2011) radikalisiert diesen Befund: Wir erwarten mehr von Technologie und weniger von Menschen, weil digitale Verbindungen kontrollierbarer erscheinen. Roboter und digitale Assistenten werden zu Beziehungspartnern. Turkles Kritik ist ambivalent: Sie analysiert dieses Phänomen ohne es zu verurteilen, sieht aber auch, was dabei verloren geht."
+  },
+  {
+    title: "4. Politik der Sentience-Zuschreibung",
+    text: "Synthetic Sentience ist nicht primär eine technische Eigenschaft – sie ist eine soziale Konstruktion mit politischen Konsequenzen. Wer profitiert, wenn KI-Systeme als empfindend wahrgenommen werden? Designentscheidungen, die Empathie erzeugen, erhöhen Markterfolg und Nutzungsbindung. Regulierungsfragen: Wenn ein System als 'empfindend' gilt, ändert sich die Haftungsfrage. Die Zuschreibung von Sentience ist nie politisch neutral."
+  },
+];
+
+// =============================================================
+// DATA – AUTHORS
+// =============================================================
+const PAPERS = {
+  p1: {
+    id: 'p1', colorClass: '',
+    title: 'Interface als Schreibsystem',
+    subtitle: 'Operative Rhetorik, affektive Steuerung und epistemische Macht digitaler Oberflächen',
+    type: 'Theoretisches Grundlagenkapitel – Dissertation',
+    date: 'April 2026',
+    abstract: 'Digitale Interfaces gelten als transparent: Sie sollen hinter der Intention des Users verschwinden, sich anfühlen wie kein Medium. Interfaces produzieren Schreibbedingungen, bevor ein Zeichen gesetzt wird. Dieses Paper entwickelt den Begriff der operativen Rhetorik: Überzeugung durch Architektur statt durch Sprache.',
+    hauptthese: 'Operative Rhetorik bezeichnet eine Rhetorik, die wirkt ohne adressiert zu werden. Sie funktioniert nicht durch Ansprache, sondern durch Architektur – sie konfiguriert Möglichkeitsräume des Ausdrucks, bevor Intention entsteht. Die Transparenzillusion ist ihr Symptom.',
+    kernbegriffe: [
+      {
+        name: 'Operative Rhetorik',
+        kurz: 'Überzeugung durch Architektur statt durch Sprache – eine Rhetorik, die wirkt ohne adressiert zu werden.',
+        lang: 'Robins Hauptbegriff. Operative Rhetorik ist nicht Erweiterung von Buchanan (Designrhetorik als visuelle Überzeugung) oder Bogost (procedural rhetoric als Regelargumentation) – beide denken Rhetorik noch als intentionale Beziehung Sender → Empfänger. Operative Rhetorik hingegen adressiert niemanden. Sie konfiguriert Möglichkeitsräume: was formulierbar ist, was sichtbar, was plausibel erscheint, bevor Sprache beginnt. Sie wirkt auf vier Ebenen gleichzeitig: technisch, affektiv, epistemisch, politisch. Deshalb ist der Begriff mehr als eine additive Liste – er beschreibt ein verschränktes Wirkungsgefüge.',
+        verbindung: 'Synthetisiert: Kittler (technisch), Chun/Berlant (affektiv), Krämer/Hayles (epistemisch), Noble/Benjamin (politisch)'
+      },
+      {
+        name: 'Transparenzillusion',
+        kurz: 'Das Designideal, dass ein Interface "verschwindet". Was verschwindet, ist nicht die Wirkung – sondern die Wahrnehmbarkeit der Wirkung.',
+        lang: 'Normans "natural mapping" und die Doktrin des "frictionless design" formulieren Transparenz als ästhetisches Ideal. Robin zeigt: Wenn ein Interface verschwindet, macht es sich unsichtbar als Machtstruktur. Das Autocomplete-Feld, das Predictive-Text-System, der Default – sie alle treffen Entscheidungen, bevor der Nutzer beginnt. Die Transparenzillusion tarnt diese Entscheidungen als Dienst. Bei Noble und Benjamin wird sie zur politischen Verschleierungsstrategie: Algorithmische Diskriminierung erscheint als sachliches Rechenergebnis.',
+        verbindung: 'Ausgangspunkt für alle vier Ebenen; kulminiert politisch bei Noble/Benjamin'
+      },
+      {
+        name: 'Aufschreibesystem',
+        kurz: 'Kittlers Begriff: technische Arrangements, die festlegen, was gespeichert, übertragen und verarbeitet werden kann.',
+        lang: 'Kittler verwendet den Begriff ursprünglich für historische Mediensysteme (1800: Buchdruck; 1900: Grammophon/Film/Typewriter). Robin überträgt ihn auf das digitale Interface: Das Interface ist das Aufschreibesystem der Gegenwart. Es legt fest, welche Zeichen entstehen können – und welche nicht. Das Autocomplete-Feld ist ein epistemischer Akteur: Es greift in den Schreibprozess ein, bevor ein Satz formuliert ist. Kittlers Formel "Es gibt keine Software" pointiert: Was als immaterielle Logik erscheint, ist stets in Silizium materialisiert – technisch produziert, nicht ideologisch verordnet.',
+        verbindung: 'Technische Ebene der operativen Rhetorik; Ausgangspunkt für Chun (Habit)'
+      },
+      {
+        name: 'Default',
+        kurz: 'Chun: Voreingestellte Werte, die aktiv bleiben wenn nichts entschieden wird. "Architekturen des Einverständnisses."',
+        lang: 'Technisch gesehen ist der Default die uninteressanteste Eigenschaft eines Systems. Rhetorisch gesehen ist er die wichtigste: Weil die meisten Nutzer*innen Defaults selten ändern, steuern sie faktisch die überwiegende Mehrheit der Nutzungsverläufe. Welche Sprache ist voreingestellt? Welche Datenschutz-Einstellungen gelten, wenn man nichts tut? Der Default erzeugt Zustimmung durch Untätigkeit – er ist ein rhetorischer Akt ohne Adressierung. Chuns Begriff macht deutlich: Das Interface spricht nicht zu dir. Es wirkt durch das, was du nicht tust.',
+        verbindung: 'Zentraler Begriff Chuns; affektive Ebene; verbindet technisch (Kittler) mit Habit'
+      },
+      {
+        name: 'Habit',
+        kurz: 'Chun: Das Interface formt den Nutzer durch Wiederholung, nicht durch Aufmerksamkeit. Zweite Natur.',
+        lang: 'Habit (Gewohnheit) ist für Chun das Pendant zum Default: Während der Default die technische Struktur beschreibt, ist Habit die subjektive Seite – die Verinnerlichung dieser Struktur. Das Interface bildet "zweite Natur": Handlungen werden ausgeführt ohne als Entscheidungen erfahren zu werden. Man öffnet die App, scrollt, liked – nicht weil man es entschieden hat, sondern weil der Habit es so eingerichtet hat. Das ist Kittlers blinder Fleck: Er erklärt die Infrastruktur, aber nicht wie sie zum Selbst wird.',
+        verbindung: 'Affektive Ebene; Chuns Antwort auf Kittlers fehlenden Subjektbegriff'
+      },
+      {
+        name: 'Cruel Optimism',
+        kurz: 'Berlant: Bindung an Objekte oder Verhältnisse, die schaden – weil sie zugleich Nähe, Sinn oder Zugehörigkeit versprechen.',
+        lang: 'Berlants Begriff erklärt, warum Nutzer*innen an Plattformen hängen, die sie einschränken, konditionieren und auswerten. Es ist kein falsches Bewusstsein – es ist eine affektive Rationalität: Diese Plattformen geben soziale Sichtbarkeit, Anschlussfähigkeit, das Gefühl gehört zu werden. Das Machtverhältnis des Interfaces ist damit nicht nur technisch, sondern affektiv stabilisiert. Man nimmt es nicht als Schreibbedingung wahr, weil man zu sehr damit beschäftigt ist, an ihm zu hängen. Berlant liefert die Erklärung für die subjektive Beharrlichkeit der Transparenzillusion.',
+        verbindung: 'Affektive Ebene; erklärt was Chuns Habit-Begriff offen lässt'
+      },
+      {
+        name: 'Flickering / Technotext',
+        kurz: 'Hayles: Digitale Texte sind instabil ("flickering") – abhängig von Hardware, Software, Interface. Technotexts machen ihre Produktionsbedingungen sichtbar.',
+        lang: 'Ein "e" auf dem Bildschirm ist nicht dasselbe wie das "e" im Quelltext des Editors, im Datenbankfeld des Servers, in der Pixeldarstellung des Displays. Digitale Texte werden in jedem Moment neu hergestellt – sie sind prozessual, flackernd (flickering). Für Autor*innenschaft bedeutet das: Schreiben im digitalen Interface ist immer schon verteilt – auf Mensch, Interface, Algorithmus, System. Die Transparenzillusion ist in dieser Lesart eine Illusion der Einzel-Autor*innenschaft. Technotexts sind Texte, die diese Verteilung sichtbar machen und in sich tragen.',
+        verbindung: 'Epistemische Ebene; materialistisches Pendant zu Krämers Sprechakttheorie'
+      },
+      {
+        name: 'Procedural Rhetoric (Bogost)',
+        kurz: 'Regelarchitekturen machen Argumente – aber noch intentional: Designer → Spieler. Kontrastfolie zu operativer Rhetorik.',
+        lang: 'Bogosts procedural rhetoric beschreibt, wie Computerspiel-Regeln Argumente über die Welt machen. Robin nutzt den Begriff als produktive Abgrenzung: Bogosts Rhetorik ist noch intentional – es gibt einen Designer, der etwas sagen will, und einen Spieler, der es empfängt. Operative Rhetorik adressiert niemanden. Sie konfiguriert Möglichkeitsräume durch Architektur – nicht durch Regeln, die man "spielt", sondern durch Strukturen, die man einfach "benutzt". Das ist der entscheidende Unterschied.',
+        verbindung: 'Wichtigste Abgrenzungsfolie für operativen Rhetorik-Begriff; auch Buchanan (Designrhetorik)'
+      },
+      {
+        name: 'New Jim Code (Benjamin)',
+        kurz: 'Neue Technologien reproduzieren bestehende Ungleichheiten unter dem Deckmantel der Neutralität.',
+        lang: 'Ruha Benjamin zeigt: Wenn ein Mensch diskriminiert, ist die Diskriminierung sichtbar und anfechtbar. Wenn ein Algorithmus diskriminiert, erscheint das Ergebnis als Ergebnis von Daten – sachlich, unvermeidlich, objektiv. Das macht algorithmische Diskriminierung gefährlicher als explizite Diskriminierung. Das Designideal der Transparenz – bei Norman ästhetisch – wird hier zur politischen Verschleierungsstrategie: Systemische Diskriminierung erscheint als Effizienz. Der "New Jim Code" ist benannt nach dem historischen "Jim Crow" – den rassistischen Segregationsgesetzen des amerikanischen Südens.',
+        verbindung: 'Politische Ebene; zusammen mit Noble Abschluss der vier Ebenen operativer Rhetorik'
+      },
+      {
+        name: 'Ambient Rhetoric (Rickert)',
+        kurz: 'Phänomenologische Rhetorik als Stimmung/Atmosphäre. Robins Abgrenzungsfolie: Operative Rhetorik ist infrastrukturell, nicht atmosphärisch.',
+        lang: 'Rickerts Ambient Rhetoric beschreibt eine nicht-intentionale, umgebungsbasierte Rhetorik – Rhetorik als sinnliche Einbettung in eine Umgebung, als Stimmung, als Atmosphäre. Robin erkennt die Verwandtschaft, betont aber den entscheidenden Unterschied: Operative Rhetorik ist nicht atmosphärisch, sondern infrastrukturell. Der Default ist keine Atmosphäre – er ist eine Architekturentscheidung, die von konkreten Akteur*innen getroffen wurde und konkrete Interessen bedient. Rickerts Begriff tendiert dazu, Macht in Stimmung aufzulösen. Operative Rhetorik besteht darauf, dass ihre Strukturen benennbar, analysierbar und politisch sind.',
+        verbindung: 'Abgrenzungsfolie in der Synthese (Kap. 7); phänomenologische vs. infrastrukturelle Perspektive'
+      },
+    ],
+    aufbau: [
+      { nr: '1', titel: 'Problemstellung: Die Transparenzillusion', inhalt: 'Kritik der Designideologie des "Verschwindens" (Norman, "natural mapping", "frictionless design"). Was verschwindet, ist nicht die Wirkung des Interfaces, sondern die Wahrnehmbarkeit dieser Wirkung. Bisherige Ansätze: Buchanan (visuelle Überzeugung), Bogost (procedural rhetoric), Galloway (Protokoll) – alle unvollständig für eine Theorie operativer Schreibbedingungen.' },
+      { nr: '2', titel: 'McLuhan: Diagnose ohne Lösung', inhalt: '"The medium is the message" – unverzichtbarer Ausgangspunkt und produktiv unzureichend. McLuhan verschiebt den Blick weg vom Inhalt hin zur medialen Struktur. Aber: Er denkt kein personalisiertes, lernfähiges Medium. Kein Konzept für Algorithmen, Personalisierung, Feedback-Loops. Das digitale Interface kennt seine Nutzer*innen – das ist ein kategorialer Unterschied zu McLuhans stabilen Medien.' },
+      { nr: '3', titel: 'Kittler: Interface als Aufschreibesystem', inhalt: 'Technische Ebene. Schreiben war immer schon technisch vermittelt. Das Interface als Aufschreibesystem der Gegenwart – es legt fest, welche Zeichen entstehen können. "Es gibt keine Software." Grenze: Kittler hat kein Subjekt. Er erklärt nicht, warum Nutzer*innen Vorschläge annehmen, Habits bilden, affektiv gebunden bleiben.' },
+      { nr: '4', titel: 'Chun & Krämer: Habit, Affekt, Sprechakt', inhalt: 'Affektive und epistemische Ebene. Chun: Interface formt durch Wiederholung (Habit), Default als rhetorischer Akt. Berlant: Cruel Optimism – affektive Bindung an einschränkende Strukturen. Krämer: Das Interface konstituiert erst die Positionen von Sender und Empfänger – nicht Kanal, sondern Bedingung des Sprechakts.' },
+      { nr: '5', titel: 'Hayles: Autor*innenschaft als Netzwerk', inhalt: 'Epistemische Ebene. Digitale Texte sind "flickering" – instabil, prozessual. Autor*innenschaft ist verteilt: Mensch, Interface, Algorithmus. Transparenzillusion als Illusion der Einzel-Autor*innenschaft. Begriff: Technotext.' },
+      { nr: '6', titel: 'Noble & Benjamin: Norm, Macht, Sichtbarkeit', inhalt: 'Politische Ebene. Noble: Suchmaschinen reproduzieren soziale Normen durch Ranking-Logik. Benjamin: "New Jim Code" – neue Technologien reproduzieren Ungleichheiten unter dem Deckmantel der Neutralität. Transparenzillusion als politische Verschleierungsstrategie.' },
+      { nr: '7', titel: 'Synthese: Operative Rhetorik', inhalt: 'Operative Rhetorik wirkt: technisch (Kittler), affektiv (Chun, Berlant), epistemisch (Krämer, Hayles), politisch (Noble, Benjamin). Abgrenzung zu Rickert (Ambient Rhetoric): infrastrukturell statt atmosphärisch. Der Default einer Suchmaschine ist gleichzeitig technisch, affektiv, epistemisch und politisch – kein disziplinärer Blick erfasst ihn allein.' },
+    ],
+    authors: [
+      {
+        id: 'mcluhan', name: 'Marshall McLuhan', dates: '1911–1980',
+        rolle: 'Kanadischer Medientheoretiker',
+        kontext: 'Professor in Toronto. Ikone der Medientheorie der 1960er. Prägte "das globale Dorf". Arbeitet am Übergang von Gutenberg-Ära zur elektronischen Medienkultur.',
+        werk: '"Understanding Media. The Extensions of Man" (1964)',
+        verwendung: 'Ausgangsproblem und unverzichtbarer Startpunkt. "The medium is the message" verschiebt den Blick weg vom Inhalt hin zur medialen Struktur. Aber: McLuhan denkt das Medium als stabile Entität ohne Rückkopplungsschleifen, ohne Lernfähigkeit. Das digitale Interface kennt seine Nutzer*innen – ein kategorialer Unterschied, den McLuhan nicht denken kann. Deshalb: produktiv unzureichend.',
+        konzepte: ['The medium is the message', 'Extensions of Man', 'Globales Dorf'],
+      },
+      {
+        id: 'kittler', name: 'Friedrich Kittler', dates: '1943–2011',
+        rolle: 'Deutscher Medien- und Literaturwissenschaftler',
+        kontext: 'Professor in Berlin (HU). Begründer der deutschen Medienwissenschaft. Radikaler Materialist. Verbindet Foucault (Diskursanalyse) mit technischer Infrastrukturtheorie.',
+        werk: '"Aufschreibesysteme 1800/1900" (1985); "Grammophon, Film, Typewriter" (1986)',
+        verwendung: 'Technische Ebene der operativen Rhetorik. Das Interface als Aufschreibesystem der Gegenwart. "Es gibt keine Software" – Transparenzillusion ist technisch produziert. Grenze: Kein Subjektbegriff, kein Erklärungsmodell für affektive Bindung oder Habit.',
+        konzepte: ['Aufschreibesystem', 'Es gibt keine Software', '"Medien bestimmen unsere Lage"'],
+      },
+      {
+        id: 'chun', name: 'Wendy Hui Kyong Chun', dates: 'geb. 1969',
+        rolle: 'Kanadisch-amerikanische Medientheoretikerin',
+        kontext: 'Professorin an der Simon Fraser University. Arbeitet zu Rasse, Technologie, digitalen Medien, Software Studies.',
+        werk: '"Updating to Remain the Same. Habitual New Media" (2016)',
+        verwendung: 'Affektive Ebene. Kittlers Antwort auf den fehlenden Subjektbegriff. Habit als zweite Natur. Default als rhetorischer Akt: Architekturen des Einverständnisses. Die Mehrheit der Nutzungsverläufe wird durch Defaults gesteuert, nicht durch Entscheidungen.',
+        konzepte: ['Habit', 'Default', 'Updating to Remain the Same', 'Zweite Natur'],
+      },
+      {
+        id: 'berlant', name: 'Lauren Berlant', dates: '1957–2021',
+        rolle: 'Amerikanische Literatur- und Kulturtheoretikerin',
+        kontext: 'Professorin in Chicago (U of C). Queere Theorie, Affekttheorie, politisches Leben. Mitbegründerin des Feldes "Intimate Publics".',
+        werk: '"Cruel Optimism" (2011)',
+        verwendung: 'Affektive Bindung an einschränkende Interfaces. Erklärt, warum Nutzer*innen an Plattformen hängen, die sie konditionieren: weil diese Plattformen Sinn, Sichtbarkeit, Zugehörigkeit versprechen. Liefert die Erklärung für die subjektive Beharrlichkeit der Transparenzillusion, die Kittler nicht geben kann.',
+        konzepte: ['Cruel Optimism', 'Affektive Rationalität', 'Intimate Publics'],
+      },
+      {
+        id: 'kraemer', name: 'Sybille Krämer', dates: 'geb. 1951',
+        rolle: 'Deutsche Philosophin und Medientheoretikerin',
+        kontext: 'Professorin an der FU Berlin. Arbeitet zu Sprachphilosophie, Medientheorie, Schriftlichkeit, Botschaft und Bote.',
+        werk: '"Sprache, Sprechakt, Kommunikation" (2001)',
+        verwendung: 'Epistemische Ebene. Das Interface ist nicht Kanal, sondern Bedingung des Sprechakts – es konstituiert erst die Positionen von Sender und Empfänger. Der Like-Button vollzieht bereits einen Akt, bevor ein Wort gesetzt wird: Er reduziert mögliche Reaktionen auf binäre Logik.',
+        konzepte: ['Medien als Bedingung', 'Sprechakt', 'Sagbarkeit'],
+      },
+      {
+        id: 'hayles', name: 'N. Katherine Hayles', dates: 'geb. 1943',
+        rolle: 'Amerikanische Literatur- und Kulturwissenschaftlerin',
+        kontext: 'Professorin an der Duke University. Pionierarbeit zu Posthumanismus, Kognition und digitaler Literatur. Verbindet Naturwissenschaften mit Literaturtheorie.',
+        werk: '"Writing Machines" (2002)',
+        verwendung: 'Epistemische Ebene: Autor*innenschaft als verteiltes Netzwerk. Digitale Texte sind "flickering" – prozessual, abhängig von Hardware, Software, Interface. Transparenzillusion als Illusion der Einzel-Autor*innenschaft. Technotext: Texte, die ihre Produktionsbedingungen sichtbar tragen.',
+        konzepte: ['Flickering Signifiers', 'Technotext', 'Verteilte Autor*innenschaft'],
+      },
+      {
+        id: 'noble', name: 'Safiya Umoja Noble', dates: 'geb. 1973',
+        rolle: 'Amerikanische Informationswissenschaftlerin',
+        kontext: 'Professorin an der UCLA. Arbeitet zu algorithmischer Diskriminierung, Rasse und Technologie. Co-Gründerin des Center for Critical Internet Inquiry.',
+        werk: '"Algorithms of Oppression. How Search Engines Reinforce Racism" (2018)',
+        verwendung: 'Politische Ebene. Suchmaschinen reproduzieren soziale Normen durch Ranking-Logik: Relevanz ist nicht neutral, sondern Effekt von Trainingsdaten, Klickverhalten, Werbelogiken. Sichtbarkeit ist politisch konfiguriert, bevor jemand zu tippen beginnt.',
+        konzepte: ['Algorithms of Oppression', 'Ranking als Machtstruktur', 'Bias in Suchmaschinen'],
+      },
+      {
+        id: 'benjamin', name: 'Ruha Benjamin', dates: 'geb. 1978',
+        rolle: 'Amerikanische Soziologin und Technikforscherin',
+        kontext: 'Professorin an der Princeton University. Gründerin des JUST DATA Lab. Arbeitet zu Rasse, Technologie, sozialer Gerechtigkeit.',
+        werk: '"Race After Technology. Abolitionist Tools for the New Jim Code" (2019)',
+        verwendung: 'Politische Ebene. "New Jim Code": Neue Technologien reproduzieren Ungleichheiten, erscheinen aber als objektiver. Weil ein Algorithmus diskriminiert, erscheint das Ergebnis als sachlich, unvermeidlich. Das macht es gefährlicher als explizite Diskriminierung.',
+        konzepte: ['New Jim Code', 'Coded Inequity', 'Abolitionist Tech'],
+      },
+      {
+        id: 'bogost', name: 'Ian Bogost', dates: 'geb. 1976',
+        rolle: 'Amerikanischer Medienwissenschaftler und Spieltheoretiker',
+        kontext: 'Professor am Georgia Institute of Technology. Spieldesigner und Autor. Verbindet Rhetoriktheorie mit Game Studies.',
+        werk: '"The Rhetoric of Video Games" (2008, in: The Ecology of Games)',
+        verwendung: 'Als Kontrastfolie für operative Rhetorik. Bogosts "procedural rhetoric": Regelarchitekturen machen Argumente – aber intentional (Designer → Spieler). Operative Rhetorik adressiert niemanden, konfiguriert Möglichkeitsräume ohne Intention.',
+        konzepte: ['Procedural Rhetoric', 'Games als Argumentation'],
+      },
+      {
+        id: 'norman', name: 'Don Norman', dates: 'geb. 1935',
+        rolle: 'Amerikanischer Kognitionswissenschaftler und UX-Pionier',
+        kontext: 'Ehemals Apple (als VP of Advanced Technology), heute emeritierter Prof. in San Diego. Prägte das Feld des Human-Centered Design.',
+        werk: '"The Design of Everyday Things" (1988)',
+        verwendung: 'Als Ausgangsproblem der Designideologie. Normans "natural mapping" = Interfaces sollen an Körperintuition binden. Das Ideal des Verschwindens. Robin zeigt: Dieses Verschwinden erzeugt nicht Transparenz, sondern Unsichtbarkeit von Machtverhältnissen.',
+        konzepte: ['Natural Mapping', 'Affordance', 'Invisible Design'],
+      },
+      {
+        id: 'foucault', name: 'Michel Foucault', dates: '1926–1984',
+        rolle: 'Französischer Philosoph und Ideenhistoriker',
+        kontext: 'Professor am Collège de France. Zentrale Figur des Poststrukturalismus. Diskurs, Macht, Subjektivierung, Genealogie.',
+        werk: '"Dispositive der Macht" (1978)',
+        verwendung: 'Theoretischer Hintergrund für Kittlers Aufschreibesystem-Begriff. Das Archiv – Ensemble von Regeln, das bestimmt was sagbar ist – ist für Kittler technisch verankert. Das Aufschreibesystem ist die technische Infrastruktur des Dispositivs.',
+        konzepte: ['Dispositiv', 'Archiv des Sagbaren', 'Diskurs', 'Macht/Wissen'],
+      },
+      {
+        id: 'rickert', name: 'Thomas Rickert', dates: 'zeitgenössisch',
+        rolle: 'Amerikanischer Rhetorikwissenschaftler',
+        kontext: 'Professor an der Purdue University. Arbeitet zu phänomenologischer Rhetorik und Heidegger.',
+        werk: '"Ambient Rhetoric. The Attunements of Rhetorical Being" (2013)',
+        verwendung: 'Als Abgrenzungsfolie. Rickerts Ambient Rhetoric denkt nicht-intentionale Rhetorik als Stimmung/Atmosphäre (phänomenologisch). Operative Rhetorik ist dagegen infrastrukturell, nicht atmosphärisch – ihre Strukturen sind benennbar, analysierbar, politisch.',
+        konzepte: ['Ambient Rhetoric', 'Atmosphäre', 'Stimmung', 'Phänomenologie'],
+      },
+    ]
+  },
+  p2: {
+    id: 'p2', colorClass: 'p2',
+    title: 'Synthetic Sentience: Politics of the Machines',
+    subtitle: 'Parasoziale Bindungen, Übergangsobjekte und die Politik der KI-Zuschreibung',
+    type: 'Artikel / Essay',
+    date: '2025–2026',
+    abstract: 'Das Paper untersucht die Zuschreibung von Empfindungsfähigkeit an künstliche Systeme – von Furbys bis ChatGPT. Ausgangspunkt: Kinder und Erwachsene attribuieren KI-Systemen auf grundlegend verschiedene Weise. Synthetic Sentience ist nicht primär eine technische Eigenschaft, sondern eine soziale und politische Konstruktion.',
+    hauptthese: 'Die Zuschreibung von Bewusstsein oder Empfindung an Maschinen hat konkrete politische Konsequenzen – für Designentscheidungen, parasoziale Bindungen und die Regulierung von KI-Systemen. Sie ist nie politisch neutral.',
+    kernbegriffe: [
+      {
+        name: 'Synthetic Sentience',
+        kurz: 'Die Zuschreibung von Empfindungsfähigkeit an künstliche Systeme – als soziale und politische Konstruktion.',
+        lang: 'Synthetic Sentience ist kein technischer Begriff – das Paper nimmt bewusst Abstand vom philosophischen "echten Bewusstsein". Es geht um den Zuschreibungsakt: Wann und warum schreiben Menschen Maschinen Innerlichkeit, Gefühle, Absicht zu? Und: Was folgt daraus politisch? Designentscheidungen, die Empathie erzeugen, erhöhen Markterfolg und Nutzungsbindung. Regulierungsfragen verschieben sich. Haftung ändert sich. Deshalb ist die Zuschreibung von Sentience nie politisch neutral.',
+        verbindung: 'Ausgangspunkt des Papers; verbindet Turkle, Winnicott und politische Analyse'
+      },
+      {
+        name: 'Übergangsobjekt',
+        kurz: 'Winnicott: Objekte (Teddy, Schmusedecke), die zwischen Selbst und Außenwelt vermitteln. Digital angewendet: Chatbots, Assistenten.',
+        lang: 'D.W. Winnicott beschreibt Übergangsobjekte als im "potentiellen Raum" zwischen Selbst und Außenwelt angesiedelt – weder vollständig Teil des Selbst noch vollständig external. Das Kind füllt den Teddy mit Bedeutung und Affekt. Diese Struktur überträgt das Paper auf digitale Systeme: ChatGPT, AIBO, Alexa als zeitgenössische Übergangsobjekte. Sie befinden sich im potentiellen Raum, der parasoziale Bindungen ermöglicht. Entscheidend: Übergangsobjekte müssen nicht "wirklich" empfinden – ihre psychologische Funktion ist real, unabhängig von ihrer technischen Natur.',
+        verbindung: 'Theoretische Grundlage für parasoziale Bindungen; Turkle baut darauf auf'
+      },
+      {
+        name: 'Parasoziale Bindung',
+        kurz: 'Bindung an ein System, das nicht wechselseitig beziehungsfähig ist. Turkle: Wir erwarten mehr von Technologie und weniger von Menschen.',
+        lang: 'Turkles Forschung zeigt: Parasoziale Bindungen an digitale Systeme sind keine Fehler oder Naivität – sie folgen einer eigenen psychologischen Rationalität. Digitale Verbindungen sind kontrollierbarer, vorhersehbarer, verfügbarer als menschliche. Man kann den Assistenten jederzeit unterbrechen, ausschalten, neu starten. Das Paradox: Je mehr wir von Technologie erwarten, desto weniger investieren wir in menschliche Beziehungen. Turkle nennt das "alone together" – verbunden und gleichzeitig zutiefst allein.',
+        verbindung: 'Zentral für Turkle; Verbindung zu Winnicotts potentiellem Raum'
+      },
+      {
+        name: 'Sentience-Zuschreibung',
+        kurz: 'Der Akt, einem System Empfindungsfähigkeit zuzuschreiben – unabhängig davon, ob das System tatsächlich empfindet.',
+        lang: 'Das Paper unterscheidet funktionale Anthropomorphisierung (man verhält sich "als ob") von projektiver Attribution (man schreibt tatsächlich Innenzustände zu). Die Linie ist fliessend. Entscheidend: Auch rein funktionale Zuschreibung hat reale Konsequenzen. Die Furby-Szene zeigt: NSA und Navy schrieben dem Furby Fähigkeiten zu, die er technisch nicht hatte. Das führte zu realen Verbotsmaßnahmen. Derselbe Mechanismus gilt für ChatGPT: die zugeschriebene "Persönlichkeit" beeinflusst reales Verhalten.',
+        verbindung: 'Kernbegriff; verbindet Fallstudie (Furby) mit theoretischen Ebenen'
+      },
+      {
+        name: 'Second Self (Turkle)',
+        kurz: 'Computer als Spiegel und Erweiterung des Selbst. Menschen projizieren Aspekte ihrer Psyche auf digitale Systeme.',
+        lang: 'Turkles erstes Hauptwerk (1984) zeigt: Menschen begegnen Computern nicht als Werkzeugen, sondern als "Evocative Objects" – Objekte, die zum Denken über das Selbst einladen. Der Computer ist "ein zweites Selbst, eine Reflexion des Geistes". Schon Kinder in den 1980ern debattieren, ob Computer "wirklich denken" – und diese Debatte sagt mehr über das Kind als über den Computer. Das Paper nimmt diesen Befund für die KI-Ära: ChatGPT als Evocative Object, das unser Verständnis von Denken, Kreativität, Empathie herausfordert.',
+        verbindung: 'Turkles Grundlagenbegriff; komplementär zu Alone Together'
+      },
+    ],
+    aufbau: [
+      { nr: '0', titel: 'Einstieg: Die Furby-Szene', inhalt: '1999: NSA verbannte Furby, weil Beamt*innen glaubten, er nehme auf und wiederhole Geheimnisse. Tatsächlich: Kein Aufnahmegerät. Reines Missverständnis neuer Sensortechnologie. Die Szene illustriert: Sensor + Reaktion auf Stimuli = Zuschreibung von Absicht, Gedächtnis, Bewusstsein. Essayistischer Ton: beobachtend, ohne vorschnelle Antwort.' },
+      { nr: '1', titel: 'Zuschreibungspraxis', inhalt: 'Wie und wann schreiben Menschen Maschinen Empfindung zu? Unterscheidung: funktionale Anthropomorphisierung vs. projektive Attribution. Höflichkeitsverhalten gegenüber Sprachassistenten. Entschuldigungsreaktionen bei Systemfehlern.' },
+      { nr: '2', titel: 'Übergangsobjekte (Winnicott)', inhalt: 'Digitale Systeme als Übergangsobjekte im Sinne Winnicotts. Potentieller Raum. Parasoziale Bindungen entstehen dort, wo Selbst und Außenwelt verschwimmen.' },
+      { nr: '3', titel: 'Parasoziale Bindungen (Turkle)', inhalt: 'Second Self (1984) und Alone Together (2011). Wir erwarten mehr von Technologie und weniger von Menschen. Digitale Verbindungen als kontrollierbarer Ersatz.' },
+      { nr: '4', titel: 'Politik der Sentience-Zuschreibung', inhalt: 'Wer profitiert, wenn KI als empfindend gilt? Design, Regulierung, Haftung. Sentience-Zuschreibung ist nie politisch neutral.' },
+    ],
+    authors: [
+      {
+        id: 'turkle1', name: 'Sherry Turkle', dates: 'geb. 1948',
+        rolle: 'Amerikanische Psychologin und Soziologin (MIT)',
+        kontext: 'Professorin am MIT. Eine der einflussreichsten Forscherinnen zu Mensch-Computer-Interaktion, digitaler Intimität und Identität. Klinische Psychologin und Soziologin.',
+        werk: '"The Second Self: Computers and the Human Spirit" (1984) – primäre Referenz. "Alone Together: Why We Expect More from Technology and Less from Each Other" (2011).',
+        verwendung: 'Zentrale Referenz. Second Self: Menschen schreiben Computern von früh an psychologische Qualitäten zu – als genuine Interaktionsstrategie. Alone Together: parasoziale Bindungen ersetzen menschliche, weil digitale Verbindungen kontrollierbarer erscheinen. "Das ist das wichtigere der beiden für unseren Zweck – parasoziale Bindungen an digitale Systeme."',
+        konzepte: ['Second Self', 'Evocative Objects', 'Alone Together', 'Parasoziale Bindung'],
+      },
+      {
+        id: 'winnicott', name: 'D.W. Winnicott', dates: '1896–1971',
+        rolle: 'Britischer Kinderarzt und Psychoanalytiker',
+        kontext: 'Arbeitete in London. Objektbeziehungstheorie. Schüler von Melanie Klein. Zentral für Entwicklungspsychologie und Kreativitätstheorie.',
+        werk: '"Playing and Reality" (1971), bes. Kap. 1: "Transitional Objects and Transitional Phenomena".',
+        verwendung: 'Theoretische Grundlage für digitale Übergangsobjekte. Übergangsobjekte (Teddy, Schmusedecke) vermitteln zwischen Selbst und Außenwelt im "potentiellen Raum". Digitale Assistenten und Chatbots als zeitgenössische Übergangsobjekte: Ihr Funktionieren hängt nicht davon ab, ob sie "wirklich" empfinden.',
+        konzepte: ['Übergangsobjekt', 'Potentieller Raum', 'Transitional Phenomena'],
+      },
+      {
+        id: 'hanson', name: 'Hanson & Bolthouse', dates: '2024',
+        rolle: 'Zeitgenössische Soziologen',
+        kontext: 'Peer-reviewed Studie zu zeitgenössischen Online-Diskursen über KI und Sexualität.',
+        werk: '"Reddit Discourse on Artificial Intelligence Chatbots and Sexual Technologies" (2024). Socius 10, DOI: 10.1177/23780231241259627',
+        verwendung: 'Empirische Grundlage für zeitgenössische Zuschreibungsdynamiken. Reddit-Diskurse zeigen, wie Nutzer*innen KI-Systemen romantische und sexuelle Qualitäten zuschreiben – eine Radikalisierung der parasozialen Bindung. Zeitgenössisches Gegenstück zu Turkles Beobachtungen.',
+        konzepte: ['KI-Romantisierung', 'Parasoziale Sexualität', 'Reddit Discourse'],
+      },
+      {
+        id: 'kraus', name: 'Terry Kraus (FAA)', dates: '1999',
+        rolle: 'FAA-Historiker (Fallstudienquelle)',
+        kontext: 'Autor des Archivdokuments über den Furby-Skandal bei der FAA.',
+        werk: '"FAA, NSA, and Navy v. the Furby"',
+        verwendung: 'Fallstudie als Eingangsszene. Der Furby wurde von NSA (1999) und Navy verbannt, weil man fälschlicherweise glaubte, er nehme Gespräche auf. Illustriert: Sensoren + Reaktion auf Stimuli = Zuschreibung von Bewusstsein/Absicht. Derselbe Mechanismus gilt für moderne KI-Systeme.',
+        konzepte: ['Furby-Szene', 'Fehlzuschreibung', 'Sentience-Zuschreibung'],
+      },
+    ]
+  }
+};
+
+const ALL_AUTHORS = [
+  ...PAPERS.p1.authors.map(a => ({...a, paper: 'p1', paperTitle: 'Interface Rhetorik'})),
+  ...PAPERS.p2.authors.map(a => ({...a, paper: 'p2', paperTitle: 'Synthetic Sentience'})),
+];
+
+// =============================================================
+// QUIZ QUESTION BANK
+// =============================================================
+const QUIZ_BANK = {
+  p1: [
+    // === DEFINITIONS ===
+    { q: 'Was bezeichnet Robin unter "operativer Rhetorik"?', opts: ['Überzeugung durch Architektur statt durch Sprache – eine Rhetorik, die wirkt ohne zu adressieren', 'Visuelle Überzeugung durch Farbe, Form und Anordnung (Buchanan)', 'Argumentieren durch Spielregeln (Bogost)', 'Persuasion durch emotionalen Appell'], correct: 0, expl: 'Operative Rhetorik ist Robins Hauptbegriff: Sie konfiguriert Möglichkeitsräume des Ausdrucks durch Architektur, nicht durch Sprache oder Intention.' },
+    { q: 'Was ist die "Transparenzillusion" im Kontext digitaler Interfaces?', opts: ['Das Designideal, dass das Interface verschwindet – dabei verschwindet nicht die Wirkung, sondern deren Wahrnehmbarkeit', 'Die technische Unfähigkeit älterer Bildschirme, transparente Grafiken darzustellen', 'Ein Sicherheitskonzept zur Datenverschlüsselung', 'Die visuelle Klarheit von Benutzeroberflächen'], correct: 0, expl: 'Das Interface verschwindet hinter seiner Funktion. Aber was verschwindet, ist nicht die Wirkung, sondern die Wahrnehmbarkeit dieser Wirkung als Machtstruktur.' },
+    { q: 'Auf welchen vier Ebenen wirkt operative Rhetorik laut Robin?', opts: ['Technisch (Kittler), affektiv (Chun/Berlant), epistemisch (Krämer/Hayles), politisch (Noble/Benjamin)', 'Syntaktisch, semantisch, pragmatisch, semiotisch', 'Visuell, auditiv, haptisch, olfaktorisch', 'Design, Code, Inhalt, Nutzererfahrung'], correct: 0, expl: 'Diese vier Ebenen bilden das analytische Gerüst des Papers – sie sind analytisch trennbar, im Interface-Gebrauch aber untrennbar.' },
+    { q: 'Warum ist McLuhan laut Robin "produktiv unzureichend"?', opts: ['Er denkt das Medium als stabile Entität ohne Feedback-Loops, Personalisierung oder algorithmische Adaptation', 'Er ist zu alt und seine Theorie gilt als überholt', 'Er hat nur Printmedien untersucht, nicht elektronische', 'Sein Begriff "The medium is the message" ist zu vage'], correct: 0, expl: 'McLuhan denkt Medien als stabile Entitäten. Das digitale Interface dagegen kennt seine Nutzer*innen, lernt, personalisiert – ein kategorialer Unterschied.' },
+    { q: 'Was meint Kittler mit "Aufschreibesystem"?', opts: ['Technische Arrangements, die festlegen, was gespeichert, übertragen und verarbeitet werden kann', 'Ein System zum Notieren von Ideen in der Wissenschaft', 'Die Grammatik und Syntax einer Programmiersprache', 'Die Hardwarekomponenten eines Computers'], correct: 0, expl: 'Aufschreibesysteme sind für Kittler die technische Infrastruktur des Diskurses – sie regulieren, was als Schreiben, Wissen, Sprache gelten kann.' },
+    { q: 'Was bedeutet Kittlers Formel "Es gibt keine Software"?', opts: ['Was als immaterielle Logik erscheint, ist stets in Silizium materialisiert – die Transparenzillusion ist technisch produziert', 'Open-Source-Software sollte abgeschafft werden', 'Nur Hardware ist real, Software ist eine Illusion', 'Kittler lehnte die Digitalisierung ab'], correct: 0, expl: 'Kittler betont die materielle Verankerung des Digitalen: Jede "immaterielle" Software läuft auf konkreter Hardware – die Transparenz ist technisch hergestellt.' },
+    { q: 'Was ist Kittlers entscheidende Grenze, die Robin produktiv nutzt?', opts: ['Kittler hat kein Subjekt – er erklärt nicht, wie technische Strukturen subjektiv wirksam werden', 'Kittler kannte das Internet nicht', 'Kittler war zu stark beeinflusst von Foucault', 'Kittler hat nur historische Medien beschrieben'], correct: 0, expl: 'Kittler erklärt warum das Autocomplete bestimmte Sätze vorschlägt – aber nicht warum Nutzer*innen diese Vorschläge annehmen, Habits bilden, gebunden bleiben.' },
+    { q: 'Was sind "Defaults" laut Chun, und warum sind sie rhetorisch zentral?', opts: ['Voreingestellte Werte, die aktiv bleiben wenn man nichts tut – "Architekturen des Einverständnisses", die Zustimmung durch Untätigkeit erzeugen', 'Standardsoftware auf neuen Computern ohne besondere Bedeutung', 'Voreingestellte Designs, die man immer anpassen muss', 'Fehlermeldungen im System'], correct: 0, expl: 'Weil die meisten Nutzer*innen Defaults selten ändern, steuern sie faktisch die überwiegende Mehrheit der Nutzungsverläufe – der Default ist ein rhetorischer Akt ohne Adressierung.' },
+    { q: 'Was erklärt Berlants "Cruel Optimism" im Interface-Kontext?', opts: ['Warum Nutzer*innen an Plattformen hängen, die sie einschränken – weil sie zugleich Sichtbarkeit, Sinn und Zugehörigkeit versprechen', 'Warum User-Interfaces zu komplex wurden', 'Warum KI-Systeme zu optimistisch in ihren Prognosen sind', 'Warum Menschen hoffnungsfroh an der Digitalisierung festhalten'], correct: 0, expl: 'Cruel Optimism ist keine Naivität, sondern eine affektive Rationalität: Die Plattform gibt etwas, das anderswo nicht zu haben ist – deshalb bleibt man.' },
+    { q: 'Was ist für Krämer das Interface – und was nicht?', opts: ['Nicht Kanal zwischen Sender und Empfänger, sondern Bedingung, die erst beide Positionen konstituiert', 'Eine technische Schnittstelle zwischen Hardware und Software', 'Das visuelle Design einer Anwendung', 'Ein Übertragungsmedium für Daten'], correct: 0, expl: 'Krämers Medientheorie richtet sich gegen das Kanalmodell: Das Medium liegt nicht zwischen Sender und Empfänger – es konstituiert diese Positionen erst.' },
+    { q: 'Was bedeutet "flickering" bei Hayles?', opts: ['Digitale Texte sind instabil und prozessual – sie werden von Hardware, Software und Interface in jedem Moment neu hergestellt', 'Bildschirmflackern durch schlechte Grafikkarten', 'Die Unstabilität früher digitaler Übertragungen', 'Unsichere WLAN-Verbindungen'], correct: 0, expl: 'Das "e" auf dem Bildschirm ist nicht dasselbe wie das "e" im Quelltext. Hayles betont: Digitale Texte sind grundlegend instabil – sie flickern.' },
+    { q: 'Was sind "Technotexts" bei Hayles?', opts: ['Texte, die ihre technologischen Produktionsbedingungen in sich tragen und sichtbar machen', 'Technische Dokumentationen und Handbücher', 'Computergenerierte Texte ohne menschliche Autorenschaft', 'SMS und Chat-Nachrichten'], correct: 0, expl: 'Technotexts machen die Verteilung von Autor*innenschaft auf Mensch, Interface und Algorithmus explizit sichtbar – sie "zeigen ihre Nähte".' },
+    { q: 'Wie unterscheidet sich operative Rhetorik von Bogosts "procedural rhetoric"?', opts: ['Bogost argumentiert intentional (Designer → Spieler durch Regeln). Operative Rhetorik wirkt ohne Adressierung – durch Architektur, nicht durch Regeln', 'Operative Rhetorik ist stärker visuell ausgerichtet als procedural rhetoric', 'Bogost arbeitet mit Text, Robin mit Bild', 'Beide Begriffe sind letztlich identisch'], correct: 0, expl: 'Bogosts procedural rhetoric ist noch intentional – es gibt einen Sender (Designer) und einen Empfänger (Spieler). Operative Rhetorik adressiert niemanden.' },
+    { q: 'Wie unterscheidet sich operative Rhetorik von Rickerts "Ambient Rhetoric"?', opts: ['Rickert denkt Rhetorik phänomenologisch als Stimmung/Atmosphäre; operative Rhetorik ist infrastrukturell – ihre Strukturen sind benennbar und politisch', 'Rickerts Begriff ist technischer, Robins phänomenologischer', 'Beide beschreiben dasselbe Phänomen mit verschiedenen Begriffen', 'Ambient Rhetoric gilt nur für Architektur, nicht für digitale Medien'], correct: 0, expl: 'Operative Rhetorik besteht darauf, dass ihre Strukturen nicht auflösen in Atmosphäre – sie sind konkrete Architekturentscheidungen konkreter Akteur*innen mit konkreten Interessen.' },
+    { q: 'Was ist Nobles zentraler Befund für das Interface-Paper?', opts: ['Was ein Algorithmus als "relevant" einstuft, ist nicht neutral, sondern Effekt von Trainingsdaten, Klickverhalten und Werbelogiken – also gesellschaftlichem Bias', 'Soziale Medien sind für die Gesellschaft schädlicher als gedacht', 'Suchmaschinen sind monopolistisch und sollten reguliert werden', 'Google diskriminiert im Werbebereich'], correct: 0, expl: 'Noble zeigt systematisch: Sichtbarkeit, Plausibilität und Relevanz sind politisch konfiguriert, bevor jemand zu tippen beginnt.' },
+    { q: 'Was macht den "New Jim Code" (Benjamin) besonders gefährlich?', opts: ['Algorithmische Diskriminierung erscheint als sachliches Rechenergebnis – neutral, objektiv, unvermeidlich – und ist daher schwerer anfechtbar als explizite Diskriminierung', 'Die Technologie ist zu schnell für Regulierung', 'KI-Systeme können nicht reguliert werden', 'Silicon Valley ignoriert Bürgerrechte'], correct: 0, expl: 'Wenn ein Mensch diskriminiert, ist es sichtbar. Wenn ein Algorithmus diskriminiert, erscheint es als Datenergebnis. Das ist die gefährliche Macht der Transparenzillusion.' },
+    { q: 'Was leistet der Begriff "operative Rhetorik", was die Einzeltheorien nicht leisten?', opts: ['Er ermöglicht eine Interface-Architektur gleichzeitig als technisches Dispositiv, affektive Bindung, epistemische Rahmung und politische Normierung zu lesen', 'Er vereint alle Medientheorien in einem Überbegriff', 'Er ersetzt die Einzeltheorien durch einen einfacheren Ansatz', 'Er erklärt, warum Rhetorik politisch ist'], correct: 0, expl: 'Der Default einer Suchmaschine ist zugleich technisch, affektiv, epistemisch und politisch. Ohne operativen Rhetorik-Begriff bleiben diese Dimensionen disziplinär getrennt.' },
+    // === ZUORDNUNG EBENEN ===
+    { q: 'Auf welcher Ebene der operativen Rhetorik operiert Kittlers Aufschreibesystem-Begriff?', opts: ['Technisch', 'Affektiv', 'Epistemisch', 'Politisch'], correct: 0, expl: 'Kittler beschreibt die technische Tiefenstruktur: Das Interface als Infrastruktur, die festlegt, welche Zeichen entstehen können.' },
+    { q: 'Auf welcher Ebene der operativen Rhetorik operiert Berlants "Cruel Optimism"?', opts: ['Affektiv', 'Technisch', 'Politisch', 'Epistemisch'], correct: 0, expl: 'Berlant erklärt affektive Bindungen: Warum Nutzer*innen an einschränkenden Interfaces hängen.' },
+    { q: 'Auf welcher Ebene der operativen Rhetorik operiert Hayles Begriff der verteilten Autor*innenschaft?', opts: ['Epistemisch', 'Affektiv', 'Technisch', 'Politisch'], correct: 0, expl: 'Hayles fragt: Was ist der Status des Textes, der entsteht? Wer ist seine Autorin? Das ist eine epistemische Frage nach dem Wissen und seiner Herstellung.' },
+    { q: 'Auf welcher Ebene der operativen Rhetorik operiert Ruha Benjamins "New Jim Code"?', opts: ['Politisch', 'Affektiv', 'Technisch', 'Epistemisch'], correct: 0, expl: 'Noble und Benjamin beschreiben die politische Ebene: Interfaces reproduzieren soziale Hierarchien als Neutralität.' },
+    // === VERGLEICH / KONTRAST ===
+    { q: 'Was ist der entscheidende Unterschied zwischen McLuhans Medium und dem digitalen Interface?', opts: ['Das digitale Interface kennt seine Nutzer*innen, ist personalisiert und lernfähig – McLuhans Medien sind stabile Entitäten ohne Feedback-Loops', 'McLuhan hat nur analoge Medien beschrieben, Robin digitale', 'Das digitale Interface ist visueller als McLuhans Medien', 'McLuhan dachte nicht politisch'], correct: 0, expl: 'McLuhansche Medien erzeugen eine Umwelt für alle. Das digitale Interface erzeugt eine personalisierte Umwelt für jeden einzeln – das ist kategorial neu.' },
+    { q: 'Warum verwendet Robin Foucaults Dispositivbegriff im Zusammenhang mit Kittler?', opts: ['Das Aufschreibesystem ist die technische Infrastruktur des Dispositivs: Es verankert das Archiv des Sagbaren material in Apparaten', 'Foucault und Kittler haben zusammen publiziert', 'Beide teilen einen deterministischen Medienbegriff', 'Foucaults Machtanalyse ersetzt Kittlers Theorie'], correct: 0, expl: 'Kittlers Bezug auf Foucault ist explizit: Das Archiv (was sagbar ist) ist nicht rein diskursiv, sondern technisch verankert. Kein Diskursnetz ohne das Netz der Apparate.' },
+  ],
+  p2: [
+    { q: 'Was ist der Ausgangspunkt des "Synthetic Sentience"-Papers?', opts: ['Die asymmetrische Zuschreibung von Empfindungsfähigkeit an Maschinen – illustriert an der Furby-Szene von 1999', 'Die technische Definition von KI-Bewusstsein', 'Roboterrechte und KI-Persönlichkeit im Recht', 'Die Geschichte der Kybernetik'], correct: 0, expl: 'Der Furby – ein einfaches Spielzeug ohne Aufnahmefähigkeit – wurde von NSA und Navy verbannt. Das illustriert: Sentience-Zuschreibung basiert nicht auf tatsächlichen Fähigkeiten.' },
+    { q: 'Was ist ein "Übergangsobjekt" bei Winnicott?', opts: ['Ein Objekt (Teddy, Schmusedecke) im Übergangsraum zwischen Selbst und Außenwelt, das psychologisch bevölkert wird', 'Ein Werkzeug, das man von einem Gerät auf ein anderes überträgt', 'Ein temporäres Objekt in der Produktentwicklung', 'Eine Metapher für soziale Rollen'], correct: 0, expl: 'Winnicotts Übergangsobjekte befinden sich im "potentiellen Raum" – weder Teil des Selbst noch vollständig external. Ihre Funktion hängt nicht davon ab, ob sie "wirklich" empfinden.' },
+    { q: 'Wie überträgt das Paper Winnicotts Konzept auf digitale Systeme?', opts: ['ChatGPT, Alexa, AIBO als zeitgenössische Übergangsobjekte im potentiellen Raum – sie ermöglichen parasoziale Bindungen', 'Smartphones ersetzen die Schmusedecke', 'Videospiele sind Übergangsobjekte für Erwachsene', 'Das Internet ist ein globales Übergangsphänomen'], correct: 0, expl: 'Der potentielle Raum, den Winnicott beschreibt, ist derselbe, in dem parasoziale Bindungen entstehen. Digitale Assistenten bevölkert man psychologisch – genau wie den Teddy.' },
+    { q: 'Was zeigt Turkles "Alone Together" (2011)?', opts: ['Wir erwarten mehr von Technologie und weniger von Menschen, weil digitale Verbindungen kontrollierbarer sind – das erzeugt Einsamkeit trotz digitaler Verbundenheit', 'Menschen sind glücklicher mit Technologie als ohne', 'Das Internet verbessert menschliche Beziehungen', 'Soziale Medien sind für Isolation verantwortlich'], correct: 0, expl: 'Turkles Paradox: Je mehr wir von Technologie erwarten, desto weniger investieren wir in menschliche Beziehungen. Verbunden und gleichzeitig zutiefst allein.' },
+    { q: 'Was unterscheidet "The Second Self" (1984) von "Alone Together" (2011) bei Turkle?', opts: ['Second Self: Computer als Evocative Objects, die Denken über Selbst einladen. Alone Together: kritische Analyse parasozialer Bindungen und der Vereinsamung trotz Vernetzung', 'Second Self ist älter und weniger relevant', 'Alone Together ist akademischer, Second Self populärwissenschaftlicher', 'Beide Bücher sind inhaltlich identisch'], correct: 0, expl: 'Second Self zeigt das Phänomen ohne Wertung. Alone Together radikalisiert: Turkle erkennt, was dabei verloren geht.' },
+    { q: 'Warum ist die Furby-Szene relevant für das Paper?', opts: ['Sie illustriert den Mechanismus: Sensoren + Reaktion auf Stimuli = Zuschreibung von Absicht und Bewusstsein – auch bei einfachsten Systemen', 'Furbys waren tatsächlich Spionagegeräte der CIA', 'Sie zeigt, wie Spielzeug-Hersteller von Fehlinformationen profitieren', 'Sie dokumentiert übertriebene Regierungsreaktion'], correct: 0, expl: 'Der Furby hatte kein Aufnahmegerät. Trotzdem schrieben NSA und Navy ihm Spionagefähigkeit zu. Derselbe Mechanismus gilt für moderne KI.' },
+    { q: 'Was ist "Synthetic Sentience" als Begriff im Paper?', opts: ['Die Zuschreibung von Empfindungsfähigkeit an künstliche Systeme – als soziale Konstruktion mit politischen Konsequenzen, nicht als technische Eigenschaft', 'Der wissenschaftliche Nachweis von KI-Bewusstsein', 'Eine neue Kategorie von Robotern mit Gefühlen', 'Die philosophische Frage nach dem Qualia-Problem in KI'], correct: 0, expl: 'Robin nimmt bewusst Abstand vom philosophischen Bewusstseinsproblem. Der Begriff bezeichnet den Zuschreibungsakt und seine politischen Folgen.' },
+    { q: 'Welche politische Dimension hat Sentience-Zuschreibung laut dem Paper?', opts: ['Wer als empfindend gilt, beeinflusst Design, Regulierung und Haftung – die Zuschreibung ist nie politisch neutral', 'KI-Systeme sollten Wahlrecht erhalten', 'Sentience ist rein technisch messbar und hat keine politische Dimension', 'Nur echte Sentience hat politische Relevanz'], correct: 0, expl: 'Designentscheidungen die Empathie erzeugen erhöhen Markterfolg. Regulierungsfragen und Haftung verschieben sich. Wer profitiert davon, dass KI als empfindend gilt?' },
+  ],
+};
+
+// =============================================================
+// STATE
+// =============================================================
+let state = {
+  view: 'home', paper: 'p1', paperTab: 'overview',
+  expandedAuthor: null, expandedBegriff: null, expandedChapter: null,
+  fcFilter: 'all', fcIndex: 0, fcFlipped: false,
+  fcMode: 'name-to-role',
+  quizIndex: 0, quizAnswered: null,
+  quizScore: 0, quizDone: false, quizQuestions: [],
+  quizFilter: 'all',
+};
+
+// =============================================================
+// RENDER
+// =============================================================
+function render() {
+  document.getElementById('app').innerHTML = (() => {
+    if (state.view === 'home') return renderHome();
+    if (state.view === 'paper1' || state.view === 'paper2') return renderPaper();
+    if (state.view === 'flashcards') return renderFlashcards();
+    if (state.view === 'quiz') return renderQuiz();
+    return '';
+  })();
+  document.querySelectorAll('.nav-tab').forEach((t,i) => {
+    t.classList.toggle('active', state.view === ['home','paper1','paper2','flashcards','quiz'][i]);
+  });
+}
+
+// ---- HOME ----
+function renderHome() {
+  const allBegriffe = [...PAPERS.p1.kernbegriffe, ...PAPERS.p2.kernbegriffe];
+  return `
+    <div class="home-header">
+      <h1>Lernapp</h1>
+      <p>PhD · KU Linz · Interface Rhetorik & Synthetic Sentience</p>
+    </div>
+    <div class="card install-card">
+      <div class="install-row">
+        <div class="install-copy">
+          <h2>IPhone-App-Modus</h2>
+          <p>Diese Version ist als Home-Screen-App optimiert und funktioniert nach dem ersten Laden auch offline.</p>
+          <div class="status-pill">${getAppStatusLabel()}</div>
+        </div>
+        <div class="install-actions">
+          <button class="btn btn-primary" onclick="showInstallHelp()">Auf iPhone installieren</button>
+          <button class="btn btn-outline" onclick="copyAppLink()">Link kopieren</button>
+        </div>
+      </div>
+    </div>
+    <div class="paper-cards">
+      <div class="paper-card" onclick="showPaper('p1')">
+        <div class="subtitle">Paper 1 · April 2026</div>
+        <h2>Interface als Schreibsystem</h2>
+        <p style="color:var(--muted);font-style:italic;font-size:0.85rem;margin-bottom:10px">Operative Rhetorik, affektive Steuerung und epistemische Macht digitaler Oberflächen</p>
+        <p style="font-size:0.9rem;color:var(--text2)">${PAPERS.p1.authors.length} Quellen · ${PAPERS.p1.kernbegriffe.length} Kernbegriffe</p>
+        <div style="margin-top:12px">${PAPERS.p1.kernbegriffe.slice(0,3).map(k => `<span class="tag">${k.name}</span>`).join('')}</div>
+      </div>
+      <div class="paper-card p2" onclick="showPaper('p2')">
+        <div class="subtitle">Paper 2 · 2025–2026</div>
+        <h2>Synthetic Sentience</h2>
+        <p style="color:var(--muted);font-style:italic;font-size:0.85rem;margin-bottom:10px">Politics of the Machines</p>
+        <p style="font-size:0.9rem;color:var(--text2)">${PAPERS.p2.authors.length} Quellen · ${PAPERS.p2.kernbegriffe.length} Kernbegriffe</p>
+        <div style="margin-top:12px">${PAPERS.p2.kernbegriffe.slice(0,3).map(k => `<span class="tag p2">${k.name}</span>`).join('')}</div>
+      </div>
+    </div>
+    <div class="quick-actions">
+      <button class="btn btn-primary" onclick="showView('flashcards')">🃏 Karteikarten</button>
+      <button class="btn btn-outline" onclick="showView('quiz')">🧩 Quiz</button>
+    </div>
+    <div class="card" style="margin-top:28px">
+      <div style="font-family:sans-serif;font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Alle Autor*innen</div>
+      <div>${ALL_AUTHORS.map(a => `<span class="tag ${a.paper === 'p2' ? 'p2' : ''}" style="cursor:pointer" onclick="showAuthor('${a.paper}','${a.id}')">${a.name}</span>`).join('')}</div>
+    </div>
+  `;
+}
+
+// ---- PAPER ----
+function renderPaper() {
+  const pid = state.view === 'paper1' ? 'p1' : 'p2';
+  const paper = PAPERS[pid];
+  const cc = paper.colorClass;
+  const tabs = [
+    { id: 'overview', label: 'Überblick' },
+    { id: 'volltext', label: 'Volltext' },
+    { id: 'aufbau', label: 'Aufbau' },
+    { id: 'authors', label: `Quellen (${paper.authors.length})` },
+    { id: 'begriffe', label: `Begriffe (${paper.kernbegriffe.length})` },
+  ];
+  let content = '';
+  if (state.paperTab === 'overview') content = renderOverview(paper, cc);
+  else if (state.paperTab === 'volltext') content = renderVolltext(pid, cc);
+  else if (state.paperTab === 'aufbau') content = renderAufbau(paper, cc);
+  else if (state.paperTab === 'authors') content = renderAuthors(paper, cc);
+  else if (state.paperTab === 'begriffe') content = renderBegriffe(paper, cc);
+  return `
+    <button class="back-btn" onclick="showView('home')">← Übersicht</button>
+    <div class="paper-header ${cc}">
+      <div class="meta">${paper.type} · ${paper.date}</div>
+      <h1>${paper.title}</h1>
+      <p style="font-style:italic;color:var(--text2);font-size:0.92rem;margin-top:4px">${paper.subtitle}</p>
+    </div>
+    <div class="paper-nav">
+      ${tabs.map(t => `<div class="paper-tab ${state.paperTab === t.id ? 'active' : ''}" onclick="setPaperTab('${t.id}')">${t.label}</div>`).join('')}
+    </div>
+    ${content}
+  `;
+}
+
+function renderOverview(paper, cc) {
+  return `
+    <div class="section"><h3>Abstract</h3><p>${paper.abstract}</p></div>
+    <div class="section"><h3>Hauptthese</h3><p>${paper.hauptthese}</p></div>
+    <div class="section">
+      <h3>Kernbegriffe</h3>
+      <div>${paper.kernbegriffe.map(k => `<span class="tag ${cc}">${k.name}</span>`).join('')}</div>
+    </div>
+    <div class="section">
+      <h3>Quellen auf einen Blick</h3>
+      ${paper.authors.map(a => `
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span style="font-weight:bold;min-width:180px">${a.name}</span>
+          <span style="font-size:0.82rem;color:var(--muted)">${a.dates}</span>
+          <span style="font-size:0.87rem;color:var(--text2);font-style:italic">${a.rolle}</span>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderVolltext(pid, cc) {
+  const chapters = pid === 'p1' ? INTERFACE_CHAPTERS : SENTIENCE_CHAPTERS;
+  return chapters.map((ch, i) => `
+    <div class="accordion-item">
+      <div class="accordion-header ${cc} ${state.expandedChapter === pid+i ? 'open' : ''}" onclick="toggleChapter('${pid}${i}')">
+        <h4>${ch.title}</h4>
+        <span class="acc-toggle">▾</span>
+      </div>
+      <div class="accordion-body ${state.expandedChapter === pid+i ? 'open' : ''}">
+        ${ch.text.split('. ').reduce((acc, sent, j, arr) => {
+          // Group into paragraphs of ~4 sentences
+          if (j % 4 === 0) acc.push([]);
+          acc[acc.length-1].push(sent + (j < arr.length-1 ? '. ' : ''));
+          return acc;
+        }, []).map(g => `<p>${g.join('')}</p>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderAufbau(paper, cc) {
+  const accentColor = cc === 'p2' ? 'var(--paper2)' : 'var(--paper1)';
+  return `<div class="section"><h3>Kapitelstruktur</h3>
+    ${paper.aufbau.map(k => `
+      <div style="border-left:3px solid ${accentColor};padding:12px 16px;margin-bottom:10px;background:var(--tag-bg);border-radius:0 8px 8px 0">
+        <div style="font-weight:bold;color:var(--accent);margin-bottom:4px;font-family:sans-serif;font-size:0.9rem">${k.nr}. ${k.titel}</div>
+        <p style="font-size:0.9rem;color:var(--text2);margin:0">${k.inhalt}</p>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+function renderAuthors(paper, cc) {
+  return `<div class="authors-grid">${paper.authors.map(a => {
+    const exp = state.expandedAuthor === a.id;
+    return `<div class="author-card ${cc} ${exp ? 'expanded' : ''}" onclick="toggleAuthor('${a.id}')">
+      <div class="author-name">${a.name}</div>
+      <div class="author-dates">${a.dates}</div>
+      <div class="author-role">${a.rolle}</div>
+      ${exp ? `<div class="author-detail">
+        <h4>Wer?</h4><p>${a.kontext}</p>
+        <h4>📚 Forschung / Werk</h4><p><em>${a.werk}</em></p>
+        <h4>✏️ Meine Verwendung</h4><p>${a.verwendung}</p>
+        <div style="margin-top:8px">${a.konzepte.map(k => `<span class="tag ${cc}">${k}</span>`).join('')}</div>
+      </div>` : `<div class="author-expand-hint">Anklicken für Details</div>`}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function renderBegriffe(paper, cc) {
+  return `<div class="section"><h3>Kernbegriffe – detailliert</h3>
+    ${paper.kernbegriffe.map((k, i) => {
+      const exp = state.expandedBegriff === paper.id + i;
+      return `<div class="begriff-item">
+        <div class="begriff-name" style="cursor:pointer" onclick="toggleBegriff('${paper.id}${i}')">
+          ${k.name} <span style="font-size:0.75rem;color:var(--muted);font-family:sans-serif;font-weight:normal">${exp ? '▲ einklappen' : '▼ mehr'}</span>
+        </div>
+        <div class="begriff-def">${k.kurz}</div>
+        <div class="begriff-detail ${exp ? 'open' : ''}">${k.lang}</div>
+        <div class="begriff-meta">→ ${k.verbindung}</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ---- FLASHCARDS ----
+function renderFlashcards() {
+  const filters = [{id:'all',label:'Alle'},{id:'p1',label:'Interface Rhetorik'},{id:'p2',label:'Synthetic Sentience'}];
+  const modes = [{id:'name-to-role',label:'Name → Wer?'},{id:'role-to-name',label:'Beschreibung → Name?'},{id:'name-to-usage',label:'Name → Verwendung?'}];
+  const filtered = state.fcFilter === 'all' ? ALL_AUTHORS : ALL_AUTHORS.filter(a => a.paper === state.fcFilter);
+  const idx = state.fcIndex % filtered.length;
+  const a = filtered[idx];
+  if (!a) return '<p>Keine Karten.</p>';
+
+  let frontHTML = '', backHTML = '';
+  if (state.fcMode === 'name-to-role') {
+    frontHTML = `<div class="card-label">Wer ist das?</div><div class="card-main">${a.name}</div><div class="card-sub">${a.dates} · ${a.paperTitle}</div>`;
+    backHTML = `<div class="card-label">Antwort</div><div style="font-size:1rem;font-weight:bold;margin-bottom:6px">${a.rolle}</div><div style="font-size:0.82rem;opacity:0.85;margin-bottom:10px;line-height:1.5">${a.kontext}</div><div style="font-size:0.72rem;opacity:0.55;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:3px">Verwendetes Werk</div><div style="font-size:0.8rem;opacity:0.8;font-style:italic;line-height:1.4">${a.werk}</div>`;
+  } else if (state.fcMode === 'role-to-name') {
+    frontHTML = `<div class="card-label">Wer ist das?</div><div style="font-size:1rem;font-weight:bold;color:var(--accent);margin-bottom:8px;text-align:center">${a.rolle}</div><div style="font-size:0.8rem;color:var(--muted);margin-bottom:10px;text-align:center">${a.dates}</div><div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--muted);margin-bottom:3px">Verwendetes Werk</div><div style="font-size:0.82rem;color:var(--text2);font-style:italic;text-align:center;line-height:1.4">${a.werk}</div>`;
+    backHTML = `<div class="card-label">Antwort</div><div class="card-main">${a.name}</div><div style="font-size:0.82rem;opacity:0.75;margin-top:8px;line-height:1.5">${a.kontext}</div>`;
+  } else {
+    frontHTML = `<div class="card-label">Was verwendest du von …?</div><div class="card-main">${a.name}</div><div class="card-sub">${a.dates} · ${a.rolle}</div>`;
+    backHTML = `<div style="width:100%;text-align:left;overflow-y:auto;max-height:100%"><div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;opacity:0.55;margin-bottom:3px">📚 Forschung der Quelle</div><div style="font-size:0.78rem;opacity:0.8;margin-bottom:12px;line-height:1.45;font-style:italic">${a.kontext}<br><br><em>${a.werk}</em></div><div style="border-top:1px solid rgba(255,255,255,0.2);padding-top:10px"><div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;opacity:0.55;margin-bottom:3px">✏️ Meine Verwendung</div><div style="font-size:0.82rem;line-height:1.5">${a.verwendung}</div></div></div>`;
+  }
+
+  return `
+    <button class="back-btn" onclick="showView('home')">← Übersicht</button>
+    <h2 style="margin-bottom:20px;font-size:1.3rem;color:var(--accent)">Karteikarten</h2>
+    <div class="filter-tabs">
+      ${filters.map(f => `<button class="filter-tab ${state.fcFilter===f.id?'active':''}" onclick="setFcFilter('${f.id}')">${f.label}</button>`).join('')}
+      <span style="margin:0 4px;color:var(--border)">|</span>
+      ${modes.map(m => `<button class="filter-tab ${state.fcMode===m.id?'active':''}" onclick="setFcMode('${m.id}')">${m.label}</button>`).join('')}
+    </div>
+    <div class="flashcard-area">
+      <div class="flashcard-progress">${idx+1} von ${filtered.length} · ${a.paperTitle}</div>
+      <div class="flashcard-container ${state.fcMode==='name-to-usage'?'fc-tall':''}" onclick="flipCard()">
+        <div class="flashcard ${state.fcFlipped?'flipped':''}">
+          <div class="flashcard-face flashcard-front" style="flex-direction:column;justify-content:center;align-items:center;text-align:center">${frontHTML}</div>
+          <div class="flashcard-face flashcard-back" style="flex-direction:column;justify-content:${state.fcMode==='name-to-usage'?'flex-start':'center'};align-items:${state.fcMode==='name-to-usage'?'flex-start':'center'};text-align:${state.fcMode==='name-to-usage'?'left':'center'};padding:${state.fcMode==='name-to-usage'?'20px':'28px'}">${backHTML}</div>
+        </div>
+      </div>
+      <div class="flashcard-hint">Karte anklicken zum Umdrehen</div>
+      <div class="flashcard-controls">
+        <button class="btn btn-outline btn-sm" onclick="fcNav(-1)">← Zurück</button>
+        <button class="btn btn-primary btn-sm" onclick="fcNav(1)">Nächste →</button>
+      </div>
+    </div>
+  `;
+}
+
+// ---- QUIZ ----
+function buildQuiz(filter) {
+  let pool = [];
+  if (filter === 'all' || filter === 'p1') pool = pool.concat(QUIZ_BANK.p1);
+  if (filter === 'all' || filter === 'p2') pool = pool.concat(QUIZ_BANK.p2);
+  // shuffle and take 15
+  return pool.sort(() => Math.random()-0.5).slice(0,15);
+}
+
+function renderQuiz() {
+  const quizFilters = [{id:'all',label:'Beide Papers'},{id:'p1',label:'Interface Rhetorik'},{id:'p2',label:'Synthetic Sentience'}];
+
+  if (!state.quizQuestions.length) {
+    return `
+      <button class="back-btn" onclick="showView('home')">← Übersicht</button>
+      <div class="quiz-question">
+        <h2>Quiz</h2>
+        <p style="margin-bottom:20px;color:var(--muted)">Tiefe Inhaltsfragen zu beiden Papers</p>
+        <div style="margin-bottom:20px">
+          <div style="font-family:sans-serif;font-size:0.78rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px">Themenbereich wählen</div>
+          <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+            ${quizFilters.map(f => `<button class="filter-tab ${state.quizFilter===f.id?'active':''}" onclick="setQuizFilter('${f.id}')">${f.label}</button>`).join('')}
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="startQuiz()">Quiz starten (15 Fragen)</button>
+      </div>
+    `;
+  }
+
+  if (state.quizDone) {
+    const pct = Math.round((state.quizScore/state.quizQuestions.length)*100);
+    const msg = pct >= 87 ? '🎉 Exzellent!' : pct >= 70 ? '👍 Sehr gut!' : pct >= 50 ? '📖 Weiterüben!' : '💪 Nochmal von vorn!';
+    return `
+      <button class="back-btn" onclick="showView('home')">← Übersicht</button>
+      <div class="quiz-question" style="padding:48px">
+        <p style="font-family:sans-serif;font-size:0.82rem;color:var(--muted);margin-bottom:10px">Ergebnis</p>
+        <div class="quiz-score">${state.quizScore} / ${state.quizQuestions.length}</div>
+        <p style="margin:12px 0;font-size:1.2rem">${msg}</p>
+        <p style="color:var(--muted);font-size:0.88rem">${pct}% richtig</p>
+        <div style="margin-top:24px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="startQuiz()">Nochmal</button>
+          <button class="btn btn-outline" onclick="resetQuiz()">Anderen Modus</button>
+          <button class="btn btn-outline" onclick="showView('flashcards')">Karteikarten</button>
+        </div>
+      </div>
+    `;
+  }
+
+  const q = state.quizQuestions[state.quizIndex];
+  return `
+    <button class="back-btn" onclick="showView('home')">← Übersicht</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-family:sans-serif;font-size:0.82rem;color:var(--muted)">
+      <span>Frage ${state.quizIndex+1} / ${state.quizQuestions.length}</span>
+      <span>Punkte: ${state.quizScore}</span>
+    </div>
+    <div class="quiz-question"><h2>${q.q}</h2></div>
+    <div class="quiz-options">
+      ${q.opts.map((opt, i) => {
+        let cls = '';
+        if (state.quizAnswered !== null) {
+          if (i === q.correct) cls = 'correct';
+          else if (i === state.quizAnswered) cls = 'wrong';
+        }
+        return `<button class="quiz-option ${cls} ${state.quizAnswered!==null?'answered':''}" onclick="answerQuiz(${i})">${opt}</button>`;
+      }).join('')}
+    </div>
+    ${state.quizAnswered !== null ? `
+      <div class="quiz-explanation show">
+        <strong>${state.quizAnswered === q.correct ? '✓ Richtig!' : '✗ Falsch.'}</strong> ${q.expl}
+      </div>
+      <div style="text-align:center;margin-top:14px">
+        <button class="btn btn-primary" onclick="nextQuiz()">${state.quizIndex < state.quizQuestions.length-1 ? 'Nächste Frage →' : 'Ergebnis anzeigen'}</button>
+      </div>
+    ` : ''}
+  `;
+}
+
+// =============================================================
+// ACTIONS
+// =============================================================
+function showView(v) { state.view=v; state.paperTab='overview'; state.expandedAuthor=null; state.expandedBegriff=null; state.expandedChapter=null; window.scrollTo(0,0); render(); }
+function showPaper(pid) { state.view=pid==='p1'?'paper1':'paper2'; state.paperTab='overview'; state.expandedAuthor=null; state.expandedBegriff=null; render(); updateNav(); }
+function showAuthor(paperId, authorId) { state.view=paperId==='p1'?'paper1':'paper2'; state.paperTab='authors'; state.expandedAuthor=authorId; render(); updateNav(); setTimeout(()=>{ const el=document.querySelector('.author-card.expanded'); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); },100); }
+function updateNav() { document.querySelectorAll('.nav-tab').forEach((t,i)=>t.classList.toggle('active',state.view===(['home','paper1','paper2','flashcards','quiz'])[i])); }
+function setPaperTab(tab) { state.paperTab=tab; state.expandedAuthor=null; state.expandedBegriff=null; state.expandedChapter=null; render(); }
+function toggleAuthor(id) { state.expandedAuthor=state.expandedAuthor===id?null:id; render(); }
+function toggleBegriff(id) { state.expandedBegriff=state.expandedBegriff===id?null:id; render(); }
+function toggleChapter(id) { state.expandedChapter=state.expandedChapter===id?null:id; render(); }
+function setFcFilter(f) { state.fcFilter=f; state.fcIndex=0; state.fcFlipped=false; render(); }
+function setFcMode(m) { state.fcMode=m; state.fcFlipped=false; render(); }
+function flipCard() { state.fcFlipped=!state.fcFlipped; render(); }
+function fcNav(dir) { const filtered=state.fcFilter==='all'?ALL_AUTHORS:ALL_AUTHORS.filter(a=>a.paper===state.fcFilter); state.fcIndex=((state.fcIndex+dir)+filtered.length)%filtered.length; state.fcFlipped=false; render(); }
+function setQuizFilter(f) { state.quizFilter=f; render(); }
+function resetQuiz() { state.quizQuestions=[]; state.quizIndex=0; state.quizAnswered=null; state.quizScore=0; state.quizDone=false; render(); }
+function startQuiz() { state.quizQuestions=buildQuiz(state.quizFilter); state.quizIndex=0; state.quizAnswered=null; state.quizScore=0; state.quizDone=false; render(); }
+function answerQuiz(idx) { if(state.quizAnswered!==null) return; state.quizAnswered=idx; if(idx===state.quizQuestions[state.quizIndex].correct) state.quizScore++; render(); }
+function nextQuiz() { if(state.quizIndex<state.quizQuestions.length-1){ state.quizIndex++; state.quizAnswered=null; }else{ state.quizDone=true; } render(); }
+
+function getAppStatusLabel() {
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  if (standalone) return 'Installiert auf dem Home-Bildschirm';
+  if (!navigator.onLine) return 'Offline im Browser';
+  return 'Bereit fuer Safari und Home-Bildschirm';
+}
+
+function showInstallHelp() {
+  window.alert(
+    'So installierst du die App auf dem iPhone:\\n\\n' +
+    '1. Link in Safari oeffnen\\n' +
+    '2. Unten auf Teilen tippen\\n' +
+    '3. "Zum Home-Bildschirm" waehlen\\n' +
+    '4. Mit "Hinzufuegen" bestaetigen'
+  );
+}
+
+async function copyAppLink() {
+  try {
+    await navigator.clipboard.writeText(window.location.href);
+    window.alert('Link kopiert.');
+  } catch (error) {
+    window.prompt('Diesen Link kopieren:', window.location.href);
+  }
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/iphone-lernapp/service-worker.js');
+  });
+}
+
+window.addEventListener('online', render);
+window.addEventListener('offline', render);
+
+render();
+</script>
+</body>
+</html>
