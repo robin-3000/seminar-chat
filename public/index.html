@@ -755,6 +755,10 @@ function renderBookmarkList() {
 }
 
 /* EXPORT */
+function buildTimestampForFilename() {
+  return new Date().toISOString().replace(/[:]/g, "-").replace(/\..+/, "");
+}
+
 function exportChat() {
   const lines = [];
   document.querySelectorAll("#chat .message").forEach((el) => {
@@ -772,7 +776,7 @@ function exportChat() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "seminar-chat-" + new Date().toISOString().slice(0, 10) + ".txt";
+  a.download = "seminar-chat-" + buildTimestampForFilename() + ".txt";
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -1105,6 +1109,12 @@ socket.on("historyClear", () => {
   messagesById.clear();
   bookmarks.clear();
   renderBookmarkList();
+});
+
+socket.on("historyReplace", (history) => {
+  bookmarks.clear();
+  renderBookmarkList();
+  renderHistory(Array.isArray(history) ? history : []);
 });
 
 socket.on("disconnect", () => {

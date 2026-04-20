@@ -206,9 +206,12 @@
         <button type="button" class="secondary" onclick="resetSettings()">Auf Standard zuruecksetzen</button>
       </div>
       <div class="row" style="margin-top:8px;">
+        <button type="button" class="secondary" onclick="exportChatHistory()">Chat als JSON exportieren</button>
+        <button type="button" class="secondary" id="importChatBtn">Alten Chat laden</button>
         <button type="button" class="danger" onclick="clearChat()">Chat leeren</button>
       </div>
       <input id="settingsFileInput" type="file" accept=".json,application/json" style="display:none">
+      <input id="chatFileInput" type="file" accept=".json,application/json" style="display:none">
     </div>
   </div>
 
@@ -426,6 +429,10 @@
       info.innerHTML = `Rhythmus aktiv: <span class="turn-highlight">${turnState.writerName}</span> schreibt gerade.`;
     }
 
+    function buildTimestampForFilename() {
+      return new Date().toISOString().replace(/[:]/g, "-").replace(/\..+/, "");
+    }
+
     function exportSettings() {
       const rules = collectGlobalRulesFromUi();
       const data = { globalRules: rules, transformRules: getTransformRules() };
@@ -437,6 +444,23 @@
       a.click();
       URL.revokeObjectURL(url);
       setStatus("Einstellungen exportiert");
+    }
+
+    function exportChatHistory() {
+      const rows = Array.from(document.querySelectorAll("#scoreboardBody tr"));
+      void rows;
+      socket.once("adminData", (payload) => {
+        const history = Array.isArray((payload && payload.history) || []) ? payload.history : [];
+        const blob = new Blob([JSON.stringify(history, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "seminar-chat-history-" + buildTimestampForFilename() + ".json";
+        a.click();
+        URL.revokeObjectURL(url);
+        setStatus("Chat-Verlauf exportiert");
+      });
+      socket.emit("adminLogin", document.getElementById("adminPassword").value);
     }
 
     function resetSettings() {
@@ -488,6 +512,9 @@
     document.getElementById("importSettingsBtn").addEventListener("click", () => {
       document.getElementById("settingsFileInput").click();
     });
+    document.getElementById("importChatBtn").addEventListener("click", () => {
+      document.getElementById("chatFileInput").click();
+    });
 
     document.getElementById("settingsFileInput").addEventListener("change", (event) => {
       const file = event.target.files && event.target.files[0];
@@ -506,6 +533,24 @@
           setStatus("Einstellungen geladen und angewendet");
         } catch {
           setStatus("Fehler: Einstellungs-Datei konnte nicht gelesen werden");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = "";
+    });
+
+    document.getElementById("chatFileInput").addEventListener("change", (event) => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (!Array.isArray(parsed)) throw new Error("invalid");
+          socket.emit("importHistory", parsed);
+          setStatus("Alter Chat wird geladen");
+        } catch {
+          setStatus("Fehler: Chat-Datei konnte nicht gelesen werden");
         }
       };
       reader.readAsText(file);
@@ -578,6 +623,10 @@
     socket.on("adminTransformRulesUpdated", () => setStatus("Autocorrect gespeichert"));
     socket.on("adminGroupsUpdated", () => setStatus("Gruppenzuordnung gespeichert"));
     socket.on("historyClear", () => setStatus("Chat wurde geleert"));
+    socket.on("historyImportDone", (payload) => {
+      const count = payload && Number.isFinite(payload.count) ? payload.count : 0;
+      setStatus("Alter Chat geladen: " + count + " Nachrichten");
+    });
   </script>
 </body>
 </html>

@@ -233,6 +233,13 @@ function emitScoreboard() {
   io.emit("scoreboardUpdate", getScoreboardRows());
 }
 
+function replaceHistory(nextHistory = []) {
+  chatHistory.length = 0;
+  chatHistory.push(...nextHistory.slice(-MAX_HISTORY));
+  saveHistory();
+  io.emit("historyReplace", chatHistory);
+}
+
 function isValidAdminPassword(password) {
   return typeof password === "string" && password === ADMIN_PASSWORD;
 }
@@ -245,7 +252,8 @@ function emitAdminData(socket) {
     transformRules,
     participants: getParticipants(),
     scoreboard: getScoreboardRows(),
-    turnState
+    turnState,
+    history: chatHistory
   });
 }
 
@@ -481,9 +489,34 @@ io.on("connection", (socket) => {
   socket.on("clearHistory", () => {
     if (!requireAdmin(socket)) return;
 
-    chatHistory.length = 0;
-    saveHistory();
+    replaceHistory([]);
     io.emit("historyClear");
+  });
+
+  socket.on("importHistory", (nextHistory) => {
+    if (!requireAdmin(socket)) return;
+    if (!Array.isArray(nextHistory)) return;
+
+    const sanitized = nextHistory
+      .map((item) => {
+        if (!item || typeof item !== "object") return null;
+        const user = String(item.user || "").trim();
+        const text = String(item.text || "").trim();
+        const color = String(item.color || "#666666").trim() || "#666666";
+        const time = String(item.time || "").trim();
+        if (!user || !text) return null;
+        return {
+          id: crypto.randomUUID(),
+          user,
+          text,
+          color,
+          time: time || new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        };
+      })
+      .filter(Boolean);
+
+    replaceHistory(sanitized);
+    socket.emit("historyImportDone", { count: sanitized.length });
   });
 
   socket.on("updateTransformRules", (nextTransformRules) => {
