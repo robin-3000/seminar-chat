@@ -64,7 +64,7 @@ body {
 }
 
 .login-title { margin: 0 0 8px; font-size: 24px; font-weight: 650; }
-.login-subtitle { margin: 0 0 20px; color: var(--muted); font-size: 14px; }
+.login-status { margin: 12px 0 0; color: var(--muted); font-size: 13px; min-height: 18px; }
 .row { display: flex; gap: 10px; }
 
 /* CHAT */
@@ -386,14 +386,14 @@ button:hover { filter: brightness(0.92); }
   <div class="card">
 
 <!-- LOGIN -->
-<div id="login">
-  <div class="login-panel">
-    <h1 class="login-title">Seminar Chat</h1>
-    <p class="login-subtitle">Schreibe mit der Gruppe in einem klaren, ruhigen Interface.</p>
+  <div id="login">
+    <div class="login-panel">
+      <h1 class="login-title">Seminar Chat</h1>
     <div class="row">
       <input id="name" placeholder="Dein Name">
       <button onclick="join()">Start</button>
     </div>
+    <div id="loginStatus" class="login-status"></div>
   </div>
 </div>
 
@@ -484,8 +484,18 @@ const messagesById = new Map();
 function join() {
   const name = document.getElementById("name").value.trim();
   if (!name) return;
+  if (!socket.connected) {
+    setLoginStatus("Verbindung zum Server wird noch aufgebaut. Bitte kurz warten.");
+    return;
+  }
   localStorage.setItem(SAVED_NAME_KEY, name);
   socket.emit("join", name);
+}
+
+function setLoginStatus(text) {
+  const el = document.getElementById("loginStatus");
+  if (!el) return;
+  el.textContent = text || "";
 }
 
 /* INIT */
@@ -502,6 +512,7 @@ socket.on("init", (data) => {
 
   const input = document.getElementById("msg");
   if (input) input.focus();
+  setLoginStatus("");
 });
 
 /* SEND */
@@ -528,6 +539,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const input = document.getElementById("msg");
   const searchInput = document.getElementById("searchInput");
   const savedName = localStorage.getItem(SAVED_NAME_KEY);
+
+  setLoginStatus(socket.connected ? "" : "Verbindung zum Server wird aufgebaut ...");
 
   if (nameInput && savedName) {
     nameInput.value = savedName;
@@ -1097,6 +1110,7 @@ socket.on("historyClear", () => {
 socket.on("disconnect", () => {
   myName = null;
   mySocketId = null;
+  setLoginStatus("Verbindung unterbrochen. Die Seite versucht neu zu verbinden.");
   const chatContainer = document.getElementById("chatContainer");
   const login = document.getElementById("login");
   if (!chatContainer || !login) return;
@@ -1105,11 +1119,16 @@ socket.on("disconnect", () => {
 });
 
 socket.on("connect", () => {
+  setLoginStatus("");
   const savedName = localStorage.getItem(SAVED_NAME_KEY);
   if (!savedName || myName) return;
   const nameInput = document.getElementById("name");
   if (nameInput) nameInput.value = savedName;
   join();
+});
+
+socket.on("connect_error", () => {
+  setLoginStatus("Server antwortet noch nicht. Bitte Seite in 20 bis 30 Sekunden neu laden.");
 });
 </script>
 
